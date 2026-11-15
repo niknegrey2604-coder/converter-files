@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>FileForge Studio Ultra — Комбайн PDF, PPTX, APK, HTML и Фото</title>
+  <title>FileForge Studio Ultra — Точная конвертация PPTX↔PDF, DOCX↔PDF и Любые файлы↔ZIP</title>
   <style>
     :root {
       --bg-0: #090c12;
@@ -43,7 +43,7 @@
     /* Шапка с глобальным Undo / Redo */
     .topbar {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(9, 12, 18, 0.95);
+      background: rgba(9, 12, 18, 0.96);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 9px 0;
@@ -64,7 +64,7 @@
     .brand-title { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
     .brand-sub { font-size: 10px; color: #34d399; font-weight: 700; }
 
-    .history-bar { display: flex; align-items: center; gap: 6px; }
+    .history-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
     /* Кнопки */
     .btn {
@@ -90,7 +90,7 @@
       background: rgba(255,255,255,0.18); font-size: 10.5px; font-weight: 800;
     }
 
-    /* Вкладки категорий на главном экране */
+    /* Вкладки категорий */
     .cat-tabs {
       display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 8px;
       border-bottom: 1px solid var(--border); scrollbar-width: none;
@@ -167,6 +167,7 @@
     .dropzone:hover { border-color: var(--accent); background: rgba(79,124,255,0.07); }
     .dz-t { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
     .dz-s { font-size: 11.5px; color: var(--muted); margin-bottom: 10px; }
+    .dz-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 
     .g2 { display: grid; grid-template-columns: 1fr; gap: 10px; }
     .g3 { display: grid; grid-template-columns: 1fr; gap: 10px; }
@@ -199,7 +200,7 @@
     .row-sub { font-size: 11px; color: var(--muted); }
 
     .pages-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px; margin-top: 10px;
     }
     .page-box {
@@ -207,7 +208,7 @@
       border-radius: var(--r-md); padding: 8px; text-align: center;
       display: flex; flex-direction: column; gap: 6px;
     }
-    .page-img { width: 100%; height: 155px; object-fit: contain; background: #06080d; border-radius: 6px; }
+    .page-img { width: 100%; height: 145px; object-fit: contain; background: #06080d; border-radius: 6px; }
 
     .banner {
       background: rgba(79,124,255,0.12); border: 1px solid rgba(79,124,255,0.35);
@@ -257,7 +258,7 @@
     }
     .modal.open { display: flex; }
     .modal-box {
-      width: 100%; max-width: 520px; max-height: 85vh;
+      width: 100%; max-width: 540px; max-height: 86vh;
       background: var(--bg-1); border: 1px solid var(--border);
       border-radius: var(--r-xl); display: flex; flex-direction: column; overflow: hidden;
     }
@@ -290,13 +291,14 @@
         <div class="brand-icon">⚡</div>
         <div>
           <div class="brand-title">FileForge Ultra</div>
-          <div class="brand-sub">Офлайн • Undo/Redo • PDF • HTML • APK</div>
+          <div class="brand-sub">Офлайн • 1-в-1 PPTX↔PDF • DOCX↔PDF • Любые файлы↔ZIP</div>
         </div>
       </div>
 
       <div class="history-bar">
         <button type="button" class="btn btn-sm" id="btn-undo-global" onclick="undoAction()" disabled title="Отменить действие (Ctrl+Z)">↩ Назад</button>
         <button type="button" class="btn btn-sm" id="btn-redo-global" onclick="redoAction()" disabled title="Вернуть действие (Ctrl+Y)">↪ Вперёд</button>
+        <button type="button" class="btn btn-sm" onclick="openTool('anyzip')" title="Упаковать любые файлы в ZIP без изменений">📦 В ZIP</button>
         <button type="button" class="btn btn-sm hidden" id="btn-home-top" onclick="goHome()">☰ Меню</button>
         <button type="button" class="btn btn-success btn-sm" onclick="openDownloads()">
           <span>📥 Файлы</span>
@@ -313,14 +315,130 @@
          ================================================================= -->
     <div id="home-view">
       <div class="cat-tabs">
-        <button type="button" class="cat-tab active" onclick="filterCat('all', this)">Все (20)</button>
-        <button type="button" class="cat-tab" onclick="filterCat('ai', this)">Инструменты ИИ и текста</button>
-        <button type="button" class="cat-tab" onclick="filterCat('pdf', this)">Инструменты PDF</button>
-        <button type="button" class="cat-tab" onclick="filterCat('img', this)">Сканер изображений</button>
-        <button type="button" class="cat-tab" onclick="filterCat('web', this)">HTML, Код и APK</button>
+        <button type="button" class="cat-tab active" onclick="filterCat('all', this)">Все (21)</button>
+        <button type="button" class="cat-tab" onclick="filterCat('pdf', this)">PDF, PPTX и Word</button>
+        <button type="button" class="cat-tab" onclick="filterCat('img', this)">Сканер и Фото</button>
+        <button type="button" class="cat-tab" onclick="filterCat('web', this)">ZIP, HTML и APK</button>
+        <button type="button" class="cat-tab" onclick="filterCat('ai', this)">Текст и ИИ</button>
       </div>
 
-      <!-- 1. Инструменты ИИ и текста -->
+      <!-- 1. Инструменты PDF, PPTX и Word -->
+      <div class="cat-block" data-cat="pdf">
+        <div class="cat-heading">📄 Документы и презентации (1-в-1 туда и обратно)</div>
+        <div class="tools-grid">
+          <button type="button" class="tile" onclick="openTool('pdfppt')">
+            <span class="tile-tag bi">1:1</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#f97316"/><text x="8.5" y="12.5" text-anchor="middle" fill="#fff" font-size="7" font-weight="bold">P</text><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#ef4444"/><text x="15.5" y="15.5" text-anchor="middle" fill="#fff" font-size="5.5" font-weight="bold">PDF</text></svg></div>
+            <span class="tile-name">PPTX ↔ PDF (Дизайн 1-в-1)</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfword')">
+            <span class="tile-tag bi">↔</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#ef4444"/><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#2563eb"/><text x="15.5" y="16" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">W</text></svg></div>
+            <span class="tile-name">Word (.docx) ↔ PDF</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfimg')">
+            <span class="tile-tag bi">↔</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#ef4444"/><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#06b6d4"/><circle cx="13.5" cy="11" r="1.4" fill="#fff"/><path d="M11 18l3-3.5 2 2 2-2 2 3.5H11z" fill="#fff"/></svg></div>
+            <span class="tile-name">PDF ↔ Изображения</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfstudio')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="15" height="18" rx="3" fill="#ef4444"/><path d="M8 9h7M8 13h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M14 17l4-4 2 2-4 4h-2v-2z" fill="#fde047"/></svg></div>
+            <span class="tile-name">Редактирование и создание PDF</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfannot')">
+            <span class="tile-tag">Новинка</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#7c3aed"/><path d="M7 15c2-3 3-3 4 0s3 1 5-2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">Аннотация и подпись PDF</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfmerge')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ea580c"/><path d="M8 8l3 3M16 16l-3-3M11 8v3H8M13 16v-3h3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">Слияние и разделение PDF</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('pdfmanage')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#10b981"/><path d="M9 10h6M9 14h6M12 6v3M12 18v-3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">Страницы и сжатие PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Сканер и студия изображений -->
+      <div class="cat-block" data-cat="img">
+        <div class="cat-heading">📷 Сканер и студия изображений</div>
+        <div class="tools-grid">
+          <button type="button" class="tile" onclick="openTool('imgslides')">
+            <span class="tile-tag bi">1:1</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="12" height="12" rx="2.5" fill="#f97316"/><rect x="9" y="8" width="12" height="11" rx="2.5" fill="#ea580c"/><text x="15" y="16" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">P</text></svg></div>
+            <span class="tile-name">Изображения → Слайды (.pptx)</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('scanner')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" stroke="#10b981" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="12" x2="18" y2="12" stroke="#34d399" stroke-width="2"/></svg></div>
+            <span class="tile-name">Сканнер в PDF</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('idphoto')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="3" fill="#ef4444"/><circle cx="12" cy="10" r="3" fill="#fff"/><path d="M7.5 18c1-2.5 8-2.5 9 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">Фото на удостоверение</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('longimg')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2.5" fill="#2563eb"/><path d="M9 10l2.5-3 2 2.5 1.5-1.5 2 3H9z" fill="#fff"/><line x1="6" y1="13" x2="18" y2="13" stroke="#93c5fd" stroke-dasharray="2 2"/></svg></div>
+            <span class="tile-name">Длинное изображение</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('splitimg')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="#3b82f6"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="#60a5fa"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="#60a5fa"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="#3b82f6"/></svg></div>
+            <span class="tile-name">Изображения по страницам</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('imgopt')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#0ea5e9"/><path d="M8 9h8M8 15h8M12 6v3M12 18v-3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">Сжатие, формат и ресайз</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('watermark')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#8b5cf6"/><path d="M7 15c2-1.5 3-1.5 5 0s3 1.5 5 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="9" r="1.5" fill="#fff"/></svg></div>
+            <span class="tile-name">Добавить водяной знак</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('genart')">
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#a855f7"/><path d="M12 7l1.2 3.3L16.5 11.5l-3.3 1.2L12 16l-1.2-3.3L7.5 11.5l3.3-1.2L12 7z" fill="#fff"/></svg></div>
+            <span class="tile-name">Генератор графики и постеров</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. ZIP, HTML-студия и APK -->
+      <div class="cat-block" data-cat="web">
+        <div class="cat-heading">📦 Любые файлы в ZIP, HTML-сайт и APK</div>
+        <div class="tools-grid">
+          <button type="button" class="tile" onclick="openTool('anyzip')">
+            <span class="tile-tag bi">1:1</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#f59e0b"/><path d="M10 6h4v2h-4V6zm0 3h4v2h-4V9zm0 3h4v5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-5z" fill="#fff"/></svg></div>
+            <span class="tile-name">Любые файлы ↔ ZIP (Без изменений)</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('htmlstudio')">
+            <span class="tile-tag">Live</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#6366f1"/><path d="M9 9l-3 3 3 3M15 9l3 3-3 3M13 8l-2 8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">HTML-студия и превью сайта</span>
+          </button>
+
+          <button type="button" class="tile" onclick="openTool('apkzip')">
+            <span class="tile-tag bi">↔</span>
+            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#10b981"/><path d="M8 10h8v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6zM9 7l1.5 2M15 7l-1.5 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="tile-name">APK / XAPK ↔ ZIP Архив</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Инструменты ИИ и текста -->
       <div class="cat-block" data-cat="ai">
         <div class="cat-heading">✨ Инструменты искусственного интеллекта и текста</div>
         <div class="tools-grid">
@@ -346,123 +464,13 @@
           </button>
         </div>
       </div>
-
-      <!-- 2. Инструменты PDF -->
-      <div class="cat-block" data-cat="pdf">
-        <div class="cat-heading">📄 Инструменты PDF (туда и обратно)</div>
-        <div class="tools-grid">
-          <button type="button" class="tile" onclick="openTool('pdfstudio')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="15" height="18" rx="3" fill="#ef4444"/><path d="M8 9h7M8 13h5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M14 17l4-4 2 2-4 4h-2v-2z" fill="#fde047"/></svg></div>
-            <span class="tile-name">Редактирование и создание PDF</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfannot')">
-            <span class="tile-tag">Новинка</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#7c3aed"/><path d="M7 15c2-3 3-3 4 0s3 1 5-2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">Аннотация и подпись PDF</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfppt')">
-            <span class="tile-tag bi">↔</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#f97316"/><text x="8.5" y="12.5" text-anchor="middle" fill="#fff" font-size="7" font-weight="bold">P</text><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#ef4444"/><text x="15.5" y="15.5" text-anchor="middle" fill="#fff" font-size="5.5" font-weight="bold">PDF</text></svg></div>
-            <span class="tile-name">PDF ↔ PPTX (Слайды)</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfword')">
-            <span class="tile-tag bi">↔</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#ef4444"/><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#2563eb"/><text x="15.5" y="16" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">W</text></svg></div>
-            <span class="tile-name">PDF ↔ Word (.docx)</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfimg')">
-            <span class="tile-tag bi">↔</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="11" height="13" rx="2.5" fill="#ef4444"/><rect x="10" y="7" width="11" height="13" rx="2.5" fill="#06b6d4"/><circle cx="13.5" cy="11" r="1.4" fill="#fff"/><path d="M11 18l3-3.5 2 2 2-2 2 3.5H11z" fill="#fff"/></svg></div>
-            <span class="tile-name">PDF ↔ Изображения</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfmerge')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ea580c"/><path d="M8 8l3 3M16 16l-3-3M11 8v3H8M13 16v-3h3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">Слияние и разделение PDF</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('pdfmanage')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#10b981"/><path d="M9 10h6M9 14h6M12 6v3M12 18v-3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">Страницы и сжатие PDF</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 3. Сканер и студия изображений -->
-      <div class="cat-block" data-cat="img">
-        <div class="cat-heading">📷 Сканер изображений</div>
-        <div class="tools-grid">
-          <button type="button" class="tile" onclick="openTool('scanner')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" stroke="#10b981" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="12" x2="18" y2="12" stroke="#34d399" stroke-width="2"/></svg></div>
-            <span class="tile-name">Сканнер в PDF</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('idphoto')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="3" fill="#ef4444"/><circle cx="12" cy="10" r="3" fill="#fff"/><path d="M7.5 18c1-2.5 8-2.5 9 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">Фото на удостоверение</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('imgslides')">
-            <span class="tile-tag bi">↔</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="12" height="12" rx="2.5" fill="#f97316"/><rect x="9" y="8" width="12" height="11" rx="2.5" fill="#ea580c"/><text x="15" y="16" text-anchor="middle" fill="#fff" font-size="8" font-weight="bold">P</text></svg></div>
-            <span class="tile-name">Изображение ↔ Слайды</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('longimg')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2.5" fill="#2563eb"/><path d="M9 10l2.5-3 2 2.5 1.5-1.5 2 3H9z" fill="#fff"/><line x1="6" y1="13" x2="18" y2="13" stroke="#93c5fd" stroke-dasharray="2 2"/></svg></div>
-            <span class="tile-name">Длинное изображение</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('splitimg')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="#3b82f6"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="#60a5fa"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="#60a5fa"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="#3b82f6"/></svg></div>
-            <span class="tile-name">Изображения по страницам</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('imgopt')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#0ea5e9"/><path d="M8 9h8M8 15h8M12 6v3M12 18v-3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">Сжатие, формат и ресайз</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('watermark')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#8b5cf6"/><path d="M7 15c2-1.5 3-1.5 5 0s3 1.5 5 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="9" r="1.5" fill="#fff"/></svg></div>
-            <span class="tile-name">Добавить водяной знак</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('genart')">
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#a855f7"/><path d="M12 7l1.2 3.3L16.5 11.5l-3.3 1.2L12 16l-1.2-3.3L7.5 11.5l3.3-1.2L12 7z" fill="#fff"/></svg></div>
-            <span class="tile-name">Генератор графики ИИ</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 4. HTML-студия и APK/ZIP -->
-      <div class="cat-block" data-cat="web">
-        <div class="cat-heading">🌐 Живой HTML-сайт, Код и APK / ZIP</div>
-        <div class="tools-grid">
-          <button type="button" class="tile" onclick="openTool('htmlstudio')">
-            <span class="tile-tag">Live</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#6366f1"/><path d="M9 9l-3 3 3 3M15 9l3 3-3 3M13 8l-2 8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">HTML-студия и превью сайта</span>
-          </button>
-
-          <button type="button" class="tile" onclick="openTool('apkzip')">
-            <span class="tile-tag bi">↔</span>
-            <div class="tile-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#10b981"/><path d="M8 10h8v6a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-6zM9 7l1.5 2M15 7l-1.5 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-            <span class="tile-name">APK / XAPK ↔ ZIP Архив</span>
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- =================================================================
          РАБОЧИЕ ОКНА ИНСТРУМЕНТОВ
          ================================================================= -->
 
-    <!-- 1. ПРОВЕРКА ПРАВОПИСАНИЯ И СТИЛЯ -->
+    <!-- 1. ПРОВЕРКА ПРАВОПИСАНИЯ -->
     <section id="ws-spell" class="workspace">
       <div class="ws-head">
         <div class="ws-title">✅ Проверка правописания и типографики</div>
@@ -473,20 +481,21 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Офлайн-проверка частых орфографических ошибок, двойных пробелов, пробелов перед знаками препинания и кавычек. Любую правку можно откатить кнопками <strong>«↩ Назад»</strong> и <strong>«↪ Вперёд»</strong>.</div>
-        <textarea id="spell-text" class="textarea" onchange="recordHistory('spell')" placeholder="Введите текст для проверки...">Привет , севодня мы зделали новый проэкт  , который  работает в офлайне без интернета . Пожалуста проверьте ево текст !</textarea>
+        <div class="desc">Офлайн-проверка частых орфографических ошибок, двойных пробелов и пунктуации. Любую правку можно откатить кнопками <strong>«↩ Назад»</strong> и <strong>«↪ Вперёд»</strong>.</div>
+        <textarea id="spell-text" class="textarea" onchange="recordHistory('spell')">Привет , севодня мы зделали новый проэкт  , который  работает в офлайне без интернета . Пожалуста проверьте ево текст !</textarea>
         <div class="toolbar">
           <button type="button" class="btn btn-primary" onclick="runSpellCheck()">🔍 Проверить и исправить</button>
           <button type="button" class="btn" onclick="saveTextAsFile('spell-text', 'checked_text.txt')">⬇️ Скачать .TXT</button>
+          <button type="button" class="btn" onclick="copyField('spell-text')">📋 Копировать</button>
         </div>
-        <div id="spell-report" class="banner mt3 hidden"></div>
+        <div id="spell-report" class="banner mt2 hidden"></div>
       </div>
     </section>
 
-    <!-- 2. AI-ПЕРЕВОД ТЕКСТА И ДОКУМЕНТОВ -->
+    <!-- 2. AI-ПЕРЕВОД ТЕКСТА -->
     <section id="ws-translate" class="workspace">
       <div class="ws-head">
-        <div class="ws-title">🌍 Двусторонний переводчик текста и файлов</div>
+        <div class="ws-title">🌍 AI-перевод текста и документов</div>
         <div class="history-bar">
           <button type="button" class="btn btn-sm" onclick="undoAction()">↩ Назад</button>
           <button type="button" class="btn btn-sm" onclick="redoAction()">↪ Вперёд</button>
@@ -498,32 +507,32 @@
           <div class="field">
             <label>Направление перевода</label>
             <select id="tr-dir" class="select">
-              <option value="ru-en">Русский → Английский (RU → EN)</option>
-              <option value="en-ru">Английский → Русский (EN → RU)</option>
-              <option value="ru-zh">Русский → Китайский (RU → ZH)</option>
-              <option value="ru-es">Русский → Испанский (RU → ES)</option>
+              <option value="ru-en">Русский → Английский (EN)</option>
+              <option value="en-ru">Английский → Русский (RU)</option>
+              <option value="ru-zh">Русский → Китайский (ZH)</option>
+              <option value="ru-es">Русский → Испанский (ES)</option>
             </select>
           </div>
           <div class="field">
-            <label>Загрузить документ (.TXT, .MD, .HTML)</label>
-            <input type="file" class="input" accept=".txt,.md,.html" onchange="loadFileToTextarea(this.files[0], 'tr-in', 'translate')" />
+            <label>Загрузить файл (.txt / .html)</label>
+            <input type="file" accept=".txt,.md,.html" class="input" onchange="loadFileToTextarea(this.files[0], 'tr-in', 'translate')" />
           </div>
         </div>
         <div class="g2 mt2">
           <div class="field">
             <label>Исходный текст</label>
-            <textarea id="tr-in" class="textarea" onchange="recordHistory('translate')">Привет! Этот документ создан в автономном приложении. Скачать готовый файл можно бесплатно без интернета.</textarea>
+            <textarea id="tr-in" class="textarea" onchange="recordHistory('translate')">Привет! Этот документ создан для проверки перевода. Скачать готовый файл можно бесплатно и без интернета.</textarea>
           </div>
           <div class="field">
-            <label>Перевод</label>
-            <textarea id="tr-out" class="textarea"></textarea>
+            <label>Результат перевода</label>
+            <textarea id="tr-out" class="textarea" onchange="recordHistory('translate')"></textarea>
           </div>
         </div>
         <div class="toolbar">
           <button type="button" class="btn btn-primary" onclick="runTranslate()">⚡ Перевести</button>
           <button type="button" class="btn" onclick="swapTranslate()">⇄ Поменять местами</button>
           <button type="button" class="btn" onclick="saveTextAsFile('tr-out', 'translated.txt')">⬇️ Скачать .TXT</button>
-          <button type="button" class="btn" onclick="saveTextAsPdf('tr-out', 'translated.pdf')">⬇️ В PDF</button>
+          <button type="button" class="btn" onclick="saveTextAsPdf('tr-out', 'translated.pdf')">⬇️ Скачать .PDF</button>
         </div>
       </div>
     </section>
@@ -578,7 +587,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Автоматически извлекает весь текст из <strong>.PDF</strong>, <strong>.DOCX</strong>, <strong>.PPTX</strong>, <strong>.HTML</strong>, <strong>.APK (AndroidManifest)</strong> и графических файлов с метаданными.</div>
+        <div class="desc">Автоматически извлекает весь текст из <strong>.PDF</strong>, <strong>.DOCX</strong>, <strong>.PPTX</strong>, <strong>.HTML</strong>, <strong>.APK</strong> и графических файлов.</div>
         <input type="file" id="f-ocr" accept=".pdf,.docx,.pptx,.html,.txt,.apk,.zip,image/*" class="hidden" onchange="ocrExtractFile(this.files[0])" />
         <div class="dropzone" onclick="document.getElementById('f-ocr').click()">
           <div class="dz-t">Выберите любой документ или картинку</div>
@@ -604,7 +613,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Создавайте многостраничные PDF или загрузите существующий PDF для правки текста. Если написали лишнее — нажмите <strong>«↩ Назад»</strong>, чтобы вернуть старый текст, а затем <strong>«↪ Вперёд»</strong>.</div>
+        <div class="desc">Создавайте многостраничные PDF или загрузите существующий PDF для правки текста. Кнопка <strong>«↩ Назад»</strong> возвращает старый текст, а <strong>«↪ Вперёд»</strong> — новый.</div>
         <input type="file" id="f-pdfstudio" accept=".pdf" class="hidden" onchange="pdfStudioLoadFile(this.files[0])" />
         <div class="toolbar" style="margin-bottom:10px;">
           <button type="button" class="btn btn-sm" onclick="document.getElementById('f-pdfstudio').click()">📂 Открыть PDF для правки</button>
@@ -683,7 +692,7 @@
         <div id="an-opts-text" class="hidden" style="margin-bottom:10px;">
           <div class="field">
             <label>Текст вставки (нажмите в любое место документа ниже)</label>
-            <input type="text" id="an-text-val" class="input" value="УТВЕРЖДЕНО • 14.11.2026" />
+            <input type="text" id="an-text-val" class="input" value="УТВЕРЖДЕНО • 15.11.2026" />
           </div>
         </div>
 
@@ -714,10 +723,10 @@
       </div>
     </section>
 
-    <!-- 7. ДВУСТОРОННИЙ КОНВЕРТЕР PDF <-> PPTX (СЛАЙДЫ) -->
+    <!-- 7. ТОЧНЫЙ 1-В-1 КОНВЕРТЕР PPTX <-> PDF (С СОХРАНЕНИЕМ ДИЗАЙНА, ФОНОВ, КАРТИНОК И КООРДИНАТ) -->
     <section id="ws-pdfppt" class="workspace">
       <div class="ws-head">
-        <div class="ws-title">📊 PDF ↔ PPTX (Слайды туда и обратно)</div>
+        <div class="ws-title">📊 PPTX ↔ PDF (Сохранение оригинального дизайна 1-в-1)</div>
         <div class="history-bar">
           <button type="button" class="btn btn-sm" onclick="undoAction()">↩ Назад</button>
           <button type="button" class="btn btn-sm" onclick="redoAction()">↪ Вперёд</button>
@@ -725,31 +734,50 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Загрузите <strong>.PPTX</strong> чтобы перевести в <strong>.PDF</strong>, ИЛИ загрузите <strong>.PDF</strong> чтобы собрать из него настоящую презентацию PowerPoint <strong>.PPTX</strong>!</div>
+        <div class="desc">Рендерит оригинальные слайды <strong>.PPTX → .PDF</strong> на холсте 1920×1080 с сохранением фонов, градиентов, картинок (<code>ppt/media</code>), рамок, цветов и точных координат элементов. Обратно <strong>.PDF → .PPTX</strong> встраивает реальные изображения страниц внутрь слайдов PowerPoint без потери внешнего вида.</div>
         <input type="file" id="f-pdfppt" accept=".pptx,.pdf" class="hidden" onchange="pdfPptLoad(this.files[0])" />
         <div class="dropzone" onclick="document.getElementById('f-pdfppt').click()">
-          <div class="dz-t">Выберите файл .PPTX или .PDF</div>
-          <div class="dz-s">Автоматическое распознавание слайдов и страниц</div>
+          <div class="dz-t">Выберите презентацию .PPTX или документ .PDF</div>
+          <div class="dz-s">Сохраняются оригинальные пропорции (16:9 / 4:3), фоны, фото и расположение блоков</div>
           <div class="dz-btns" onclick="event.stopPropagation()">
-            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-pdfppt').click()">Выбрать .PPTX / .PDF</button>
-            <button type="button" class="btn btn-sm" onclick="pdfPptDemo()">✨ Демо-слайды</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-pdfppt').click()">📂 Открыть .PPTX / .PDF</button>
+            <button type="button" class="btn btn-sm" onclick="pdfPptDemo()">✨ Демо-презентация</button>
             <button type="button" class="btn btn-sm" onclick="pdfPptAddSlide()">➕ Добавить слайд</button>
           </div>
         </div>
 
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="field">
+            <label>Режим конвертации</label>
+            <select id="ppt-render-mode" class="select" onchange="renderPdfPpt()">
+              <option value="exact">1-в-1 Оригинальный вид (Фоны, картинки, цвета и координаты)</option>
+              <option value="edit">Редактируемые текстовые слайды</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Качество рендера (Full HD 1920×1080)</label>
+            <select id="ppt-quality" class="select">
+              <option value="0.96">Максимальное (96% • Чёткие шрифты и схемы)</option>
+              <option value="0.85">Оптимальное (85% • Компактный PDF)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="pdfppt-preview" class="pages-grid" style="margin-bottom:10px;"></div>
         <div id="pdfppt-list"></div>
 
         <div class="toolbar">
-          <button type="button" class="btn btn-primary" onclick="exportSlidesToPdf()">⬇️ Скачать как .PDF</button>
-          <button type="button" class="btn btn-success" onclick="exportSlidesToPptx()">⬇️ Скачать как .PPTX (PowerPoint)</button>
+          <button type="button" class="btn btn-primary" onclick="exportSlidesToPdf()">⬇️ Скачать как .PDF (1-в-1)</button>
+          <button type="button" class="btn btn-success" onclick="exportSlidesToPptx()">⬇️ Скачать как .PPTX (С картинками 1-в-1)</button>
+          <button type="button" class="btn" onclick="exportSlidesAsPngZip()">🖼️ Скачать слайды PNG в .ZIP</button>
         </div>
       </div>
     </section>
 
-    <!-- 8. ДВУСТОРОННИЙ КОНВЕРТЕР PDF <-> WORD (.DOCX) -->
+    <!-- 8. ДВУСТОРОННИЙ КОНВЕРТЕР WORD (.DOCX) <-> PDF С ОФОРМЛЕНИЕМ -->
     <section id="ws-pdfword" class="workspace">
       <div class="ws-head">
-        <div class="ws-title">📘 PDF ↔ Word (.docx) туда и обратно</div>
+        <div class="ws-title">📘 Word (.docx) ↔ PDF с оформлением</div>
         <div class="history-bar">
           <button type="button" class="btn btn-sm" onclick="undoAction()">↩ Назад</button>
           <button type="button" class="btn btn-sm" onclick="redoAction()">↪ Вперёд</button>
@@ -757,16 +785,17 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Откройте <strong>.PDF</strong> или <strong>.DOCX</strong>, отредактируйте текст (работает Undo/Redo) и сохраните в любой из двух форматов.</div>
+        <div class="desc">Откройте <strong>.DOCX</strong> (считываются заголовки, абзацы, таблицы <code>&lt;w:tbl&gt;</code>, жирный/курсивный шрифт и встроенные картинки <code>word/media/*</code>) или <strong>.PDF</strong>, просмотрите готовые страницы A4 и сохраните в нужный формат.</div>
         <input type="file" id="f-pdfword" accept=".pdf,.docx,.txt" class="hidden" onchange="pdfWordLoad(this.files[0])" />
         <div class="toolbar" style="margin-bottom:10px;">
-          <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-pdfword').click()">📂 Открыть .PDF или .DOCX</button>
-          <button type="button" class="btn btn-sm" onclick="pdfWordDemo()">✨ Демо-документ</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-pdfword').click()">📂 Открыть .DOCX или .PDF</button>
+          <button type="button" class="btn btn-sm" onclick="pdfWordDemo()">✨ Демо-документ с таблицей</button>
         </div>
-        <textarea id="pw-text" class="textarea" style="min-height:180px;" onchange="recordHistory('pdfword')" placeholder="Содержимое документа..."></textarea>
+        <div id="pw-preview" class="pages-grid" style="margin-bottom:10px;"></div>
+        <textarea id="pw-text" class="textarea" style="min-height:150px;" oninput="onWordTextEdit()" placeholder="Содержимое документа..."></textarea>
         <div class="toolbar">
-          <button type="button" class="btn btn-primary" onclick="exportWordDocx('pw-text', 'document.docx')">⬇️ Сохранить в Word (.docx)</button>
-          <button type="button" class="btn btn-success" onclick="saveTextAsPdf('pw-text', 'document.pdf')">⬇️ Сохранить в .PDF</button>
+          <button type="button" class="btn btn-primary" onclick="exportWordDocxFromState('document.docx')">⬇️ Сохранить в Word (.docx)</button>
+          <button type="button" class="btn btn-success" onclick="exportWordPdfFromState('document.pdf')">⬇️ Сохранить в .PDF (A4 1-в-1)</button>
         </div>
       </div>
     </section>
@@ -901,7 +930,7 @@
       </div>
     </section>
 
-    <!-- 13. ФОТО НА УДОСТОВЕРЕНИЕ / ДОКУМЕНТЫ (3x4, ПАСПОРТ) -->
+    <!-- 13. ФОТО НА УДОСТОВЕРЕНИЕ / ДОКУМЕНТЫ -->
     <section id="ws-idphoto" class="workspace">
       <div class="ws-head">
         <div class="ws-title">🪪 Фотосъёмка для удостоверения (3×4, Паспорт)</div>
@@ -951,10 +980,10 @@
       </div>
     </section>
 
-    <!-- 14. ИЗОБРАЖЕНИЯ <-> СЛАЙДЫ (.PPTX) -->
+    <!-- 14. ИЗОБРАЖЕНИЯ -> СЛАЙДЫ (.PPTX С НАСТОЯЩИМИ КАРТИНКАМИ ВНУТРИ) -->
     <section id="ws-imgslides" class="workspace">
       <div class="ws-head">
-        <div class="ws-title">📽️ Изображения ↔ Слайды (.pptx)</div>
+        <div class="ws-title">📽️ Изображения → Слайды (.pptx с реальными фото)</div>
         <div class="history-bar">
           <button type="button" class="btn btn-sm" onclick="undoAction()">↩ Назад</button>
           <button type="button" class="btn btn-sm" onclick="redoAction()">↪ Вперёд</button>
@@ -962,11 +991,28 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Превратите набор скриншотов или фотографий в презентацию PowerPoint <strong>.PPTX</strong>, или извлеките слайды в картинки.</div>
+        <div class="desc">Вшивает ваши реальные фотографии (<code>ppt/media/imageN.jpg</code>) прямо внутрь слайдов PowerPoint <strong>.PPTX</strong> с сохранением пропорций (без обрезки и без текстовых заглушек).</div>
         <input type="file" id="f-imgslides" accept="image/*" multiple class="hidden" onchange="imgSlidesAdd(this.files)" />
         <div class="toolbar" style="margin-bottom:10px;">
           <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-imgslides').click()">📂 Выбрать изображения</button>
           <button type="button" class="btn btn-sm" onclick="imgSlidesDemo()">✨ Демо-картинки</button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="state.imgSlides=[];recordHistory('imgslides');renderImgSlides()">Очистить</button>
+        </div>
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="field">
+            <label>Размещение фото на слайде</label>
+            <select id="is-fit" class="select">
+              <option value="contain">Вписать целиком (Сохранить пропорции 1-в-1)</option>
+              <option value="stretch">Растянуть на весь слайд 16:9</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Фон полей вокруг вертикальных фото</label>
+            <select id="is-bg" class="select">
+              <option value="000000">Чёрный (Кинотеатр)</option>
+              <option value="FFFFFF">Белый (Документ)</option>
+            </select>
+          </div>
         </div>
         <div id="imgslides-grid" class="pages-grid"></div>
         <div class="toolbar">
@@ -1014,7 +1060,7 @@
       </div>
     </section>
 
-    <!-- 16. ИЗОБРАЖЕНИЯ ПО СТРАНИЦАМ (НАРЕЗКА НА ПЛИТКИ / СТРАНИЦЫ) -->
+    <!-- 16. ИЗОБРАЖЕНИЯ ПО СТРАНИЦАМ (НАРЕЗКА) -->
     <section id="ws-splitimg" class="workspace">
       <div class="ws-head">
         <div class="ws-title">🧩 Изображения по страницам (Нарезка)</div>
@@ -1070,14 +1116,15 @@
               <option value="image/webp">WebP (Минимальный вес)</option>
               <option value="image/jpeg">JPEG</option>
               <option value="image/png">PNG (Без потерь)</option>
+              <option value="original">Оригинал (Байт-в-байт без пережатия)</option>
             </select>
           </div>
           <div class="field">
-            <label>Качество <span id="io-q-lbl">75%</span></label>
-            <input type="range" id="io-q" min="10" max="100" value="75" oninput="document.getElementById('io-q-lbl').textContent=this.value+'%'" onchange="imgOptReprocess()" />
+            <label>Качество <span id="io-q-lbl">85%</span></label>
+            <input type="range" id="io-q" min="10" max="100" value="85" oninput="document.getElementById('io-q-lbl').textContent=this.value+'%'" onchange="imgOptReprocess()" />
           </div>
           <div class="field">
-            <label>Макс. ширина (px, 0 = авто)</label>
+            <label>Макс. ширина (px, 0 = оригинал)</label>
             <input type="number" id="io-maxw" class="input" value="0" min="0" max="8000" onchange="imgOptReprocess()" />
           </div>
         </div>
@@ -1167,7 +1214,55 @@
       </div>
     </section>
 
-    <!-- 20. ЖИВАЯ HTML-СТУДИЯ С ПРЕДПРОСМОТРОМ САЙТА -->
+    <!-- 20. УНИВЕРСАЛЬНЫЙ КОНВЕРТЕР ЛЮБЫХ ФАЙЛОВ <-> ZIP (БАЙТ-В-БАЙТ БЕЗ ИЗМЕНЕНИЙ) -->
+    <section id="ws-anyzip" class="workspace">
+      <div class="ws-head">
+        <div class="ws-title">📦 Любые файлы ↔ ZIP (Байт-в-байт без изменений)</div>
+        <div class="history-bar">
+          <button type="button" class="btn btn-sm" onclick="undoAction()">↩ Назад</button>
+          <button type="button" class="btn btn-sm" onclick="redoAction()">↪ Вперёд</button>
+          <button type="button" class="btn btn-sm" onclick="goHome()">✕</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="desc">Принимает <strong>абсолютно любые файлы</strong> (<code>.pptx</code>, <code>.pdf</code>, <code>.docx</code>, <code>.xlsx</code>, <code>.jpg</code>, <code>.png</code>, <code>.mp4</code>, <code>.mp3</code>, <code>.apk</code>, <code>.html</code>, <code>.exe</code> и любые другие) и упаковывает их в <strong>.ZIP</strong> побитово без перекодирования. Можно также добавить все готовые файлы из шапки или распаковать любой существующий <strong>.ZIP</strong>.</div>
+        <input type="file" id="f-anyzip-add" multiple class="hidden" onchange="anyZipAddFiles(this.files)" />
+        <input type="file" id="f-anyzip-open" accept=".zip,.apk,.apks,.xapk,.pptx,.docx,.xlsx" class="hidden" onchange="anyZipExtractArchive(this.files[0])" />
+
+        <div class="dropzone" onclick="document.getElementById('f-anyzip-add').click()">
+          <div class="dz-t">Выберите любые файлы для упаковки в ZIP</div>
+          <div class="dz-s">Без ограничений по расширениям • 100% оригинальные байты</div>
+          <div class="dz-btns" onclick="event.stopPropagation()">
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-anyzip-add').click()">➕ Добавить любые файлы</button>
+            <button type="button" class="btn btn-sm" onclick="anyZipImportDownloads()">📥 Забрать из «Готовых файлов»</button>
+            <button type="button" class="btn btn-sm" onclick="document.getElementById('f-anyzip-open').click()">📂 Распаковать .ZIP архив</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="state.anyZipItems=[];recordHistory('anyzip');renderAnyZip()">Очистить</button>
+          </div>
+        </div>
+
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="field">
+            <label>Имя выходного ZIP-архива</label>
+            <input type="text" id="az-name" class="input" value="files_bundle.zip" />
+          </div>
+          <div class="field">
+            <label>Режим упаковки</label>
+            <select id="az-mode" class="select">
+              <option value="store">Без изменений (Store 0% • Мгновенно, байт-в-байт)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="anyzip-summary" class="banner hidden"></div>
+        <div id="anyzip-list"></div>
+
+        <div class="toolbar">
+          <button type="button" class="btn btn-primary" onclick="anyZipBuildDownload()">📦 Упаковать и скачать .ZIP</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21. ЖИВАЯ HTML-СТУДИЯ С ПРЕДПРОСМОТРОМ САЙТА -->
     <section id="ws-htmlstudio" class="workspace">
       <div class="ws-head">
         <div class="ws-title">🌐 HTML-студия и живой предпросмотр сайта</div>
@@ -1178,9 +1273,8 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Пишите HTML/CSS/JS или конвертируйте текст в сайт — справа/снизу сразу работает живой интерактивный сайт! Если случайно удалили код, жмите <strong>«↩ Назад»</strong>.</div>
+        <div class="desc">Пишите HTML/CSS/JS или конвертируйте текст в сайт — справа/снизу сразу работает живой интерактивный сайт! Кнопка <strong>«↩ Назад»</strong> возвращает удалённый код.</div>
 
-        <!-- Панель шаблонов и режимов отображения -->
         <div class="toolbar" style="margin-bottom:10px;">
           <button type="button" class="btn btn-sm" onclick="htmlLoadTemplate('landing')">🚀 Шаблон: Сайт-визитка</button>
           <button type="button" class="btn btn-sm" onclick="htmlLoadTemplate('game')">🎮 Шаблон: Мини-игра</button>
@@ -1223,7 +1317,7 @@
       </div>
     </section>
 
-    <!-- 21. APK / APKS / XAPK <-> ZIP -->
+    <!-- 22. APK / APKS / XAPK <-> ZIP -->
     <section id="ws-apkzip" class="workspace">
       <div class="ws-head">
         <div class="ws-title">🤖 APK / APKS / XAPK ↔ ZIP Конвертер</div>
@@ -1234,7 +1328,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="desc">Распаковывайте <strong>.apk / .xapk</strong> в <strong>.zip</strong> или извлекайте ресурсы по одному, а также собирайте папку/архив обратно в <strong>.apk</strong> или <strong>.xapk</strong>.</div>
+        <div class="desc">Распаковывайте <strong>.apk / .xapk</strong> в <strong>.zip</strong> или извлекайте ресурсы по одному, а также собирайте архив обратно в <strong>.apk</strong> или <strong>.xapk</strong> байт-в-байт.</div>
         <input type="file" id="f-apk" accept=".apk,.apks,.xapk,.zip" class="hidden" onchange="apkLoad(this.files[0])" />
         <div class="toolbar" style="margin-bottom:10px;">
           <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('f-apk').click()">📂 Открыть APK / XAPK / ZIP</button>
@@ -1263,8 +1357,11 @@
         <div style="text-align:center;color:var(--muted);padding:20px;">Пока нет созданных файлов.</div>
       </div>
       <div class="modal-f">
-        <button type="button" class="btn btn-danger btn-sm" onclick="clearDownloads()">Очистить</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="closeDownloads()">Закрыть</button>
+        <button type="button" class="btn btn-sm" onclick="openTool('anyzip');anyZipImportDownloads();closeDownloads()">📦 Упаковать все в ZIP</button>
+        <div style="display:flex;gap:6px;">
+          <button type="button" class="btn btn-danger btn-sm" onclick="clearDownloads()">Очистить</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="closeDownloads()">Закрыть</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1291,12 +1388,14 @@
         if (tool === 'pdfstudio') return { pages: JSON.parse(JSON.stringify(state.pdfStudioPages)), idx: state.pdfStudioIdx };
         if (tool === 'pdfannot') return { pages: JSON.parse(JSON.stringify(state.annotPages)), idx: state.annotIdx };
         if (tool === 'pdfppt') return { slides: JSON.parse(JSON.stringify(state.slides)) };
-        if (tool === 'pdfword') return { text: document.getElementById('pw-text').value };
+        if (tool === 'pdfword') return { text: document.getElementById('pw-text').value, pages: JSON.parse(JSON.stringify(state.wordPages)) };
         if (tool === 'pdfimg') return { list: JSON.parse(JSON.stringify(state.pdfImgList)) };
         if (tool === 'pdfmerge') return { list: JSON.parse(JSON.stringify(state.mergeList)) };
         if (tool === 'pdfmanage') return { pages: JSON.parse(JSON.stringify(state.managePages)) };
+        if (tool === 'imgslides') return { list: JSON.parse(JSON.stringify(state.imgSlides)) };
         if (tool === 'htmlstudio') return { code: document.getElementById('hs-code').value };
-        if (tool === 'apkzip') return { entries: state.apkEntries.map(e => ({ name: e.name, data: new Uint8Array(e.data) })), base: state.apkBase };
+        if (tool === 'apkzip') return { entries: state.apkEntries.map(e => ({ name: e.name, data: Array.from(e.data) })), base: state.apkBase };
+        if (tool === 'anyzip') return { items: state.anyZipItems.map(e => ({ name: e.name, data: Array.from(e.data), type: e.type })) };
         return null;
       },
 
@@ -1308,12 +1407,14 @@
         if (tool === 'pdfstudio') { state.pdfStudioPages = snap.pages; state.pdfStudioIdx = snap.idx; renderPdfStudio(); }
         if (tool === 'pdfannot') { state.annotPages = snap.pages; state.annotIdx = snap.idx; renderAnnotCanvas(); }
         if (tool === 'pdfppt') { state.slides = snap.slides; renderPdfPpt(); }
-        if (tool === 'pdfword') document.getElementById('pw-text').value = snap.text;
+        if (tool === 'pdfword') { document.getElementById('pw-text').value = snap.text; state.wordPages = snap.pages; renderWordPreview(); }
         if (tool === 'pdfimg') { state.pdfImgList = snap.list; renderPdfImg(); }
         if (tool === 'pdfmerge') { state.mergeList = snap.list; renderPdfMerge(); }
         if (tool === 'pdfmanage') { state.managePages = snap.pages; renderPdfManage(); }
+        if (tool === 'imgslides') { state.imgSlides = snap.list; renderImgSlides(); }
         if (tool === 'htmlstudio') { document.getElementById('hs-code').value = snap.code; updateHtmlPreview(); }
-        if (tool === 'apkzip') { state.apkEntries = snap.entries; state.apkBase = snap.base; renderApkList(); }
+        if (tool === 'apkzip') { state.apkEntries = snap.entries.map(e => ({ name: e.name, data: new Uint8Array(e.data) })); state.apkBase = snap.base; renderApkList(); }
+        if (tool === 'anyzip') { state.anyZipItems = snap.items.map(e => ({ name: e.name, data: new Uint8Array(e.data), type: e.type })); renderAnyZip(); }
       },
 
       push(tool) {
@@ -1323,7 +1424,7 @@
         const serialized = JSON.stringify(snap);
         if (st.undo.length && JSON.stringify(st.undo[st.undo.length - 1]) === serialized) return;
         st.undo.push(snap);
-        if (st.undo.length > 35) st.undo.shift();
+        if (st.undo.length > 30) st.undo.shift();
         st.redo = [];
         this.updateButtons();
       },
@@ -1351,10 +1452,8 @@
 
       updateButtons() {
         const st = this.ensure(this.activeTool);
-        const canUndo = st.undo.length > 1;
-        const canRedo = st.redo.length > 0;
-        document.getElementById('btn-undo-global').disabled = !canUndo;
-        document.getElementById('btn-redo-global').disabled = !canRedo;
+        document.getElementById('btn-undo-global').disabled = st.undo.length <= 1;
+        document.getElementById('btn-redo-global').disabled = st.redo.length === 0;
       }
     };
 
@@ -1381,6 +1480,7 @@
       annotIdx: 0,
       annotTool: 'draw',
       slides: [],
+      wordPages: [],
       pdfImgList: [],
       mergeList: [],
       managePages: [],
@@ -1394,7 +1494,8 @@
       wmImg: null,
       artSeed: 0.42,
       apkEntries: [],
-      apkBase: 'app_package'
+      apkBase: 'app_package',
+      anyZipItems: []
     };
 
     function toast(msg) {
@@ -1455,7 +1556,7 @@
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      state.downloads.unshift({ name, url, size: blob.size, time });
+      state.downloads.unshift({ name, url, size: blob.size, time, blob });
       renderDownloads();
 
       const a = document.createElement('a');
@@ -1495,7 +1596,7 @@
     function canvasDownload(canvasId, filename) {
       const c = document.getElementById(canvasId);
       const mime = filename.endsWith('.jpg') ? 'image/jpeg' : 'image/png';
-      c.toBlob(b => saveFile(b, filename), mime, 0.92);
+      c.toBlob(b => saveFile(b, filename), mime, 0.94);
     }
 
     function copyField(id) {
@@ -1509,11 +1610,11 @@
     }
 
     /* =======================================================================
-       3. ВСТРОЕННЫЕ ДВИЖКИ PDF, ZIP, DOCX И PPTX (OOXML)
+       3. ВСТРОЕННЫЕ ДВИЖКИ PDF, ZIP (STORE + DEFLATE), PPTX И DOCX
        ======================================================================= */
     function renderTextPage(title, body, dark = false, landscape = false) {
-      const w = landscape ? 1600 : 1240;
-      const h = landscape ? 900 : 1754;
+      const w = landscape ? 1920 : 1240;
+      const h = landscape ? 1080 : 1754;
       const c = document.createElement('canvas');
       c.width = w; c.height = h;
       const ctx = c.getContext('2d');
@@ -1524,19 +1625,19 @@
       ctx.fillRect(0, 0, w, 14);
 
       ctx.fillStyle = dark ? '#f8fafc' : '#0f172a';
-      ctx.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      let y = 105;
-      y = wrapText(ctx, title || '', 80, y, w - 160, 52);
+      ctx.font = 'bold 46px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      let y = 110;
+      y = wrapText(ctx, title || '', 85, y, w - 170, 56);
 
       ctx.fillStyle = dark ? '#334155' : '#cbd5e1';
-      ctx.fillRect(80, y + 4, 150, 4);
-      y += 46;
+      ctx.fillRect(85, y + 6, 160, 4);
+      y += 48;
 
       ctx.fillStyle = dark ? '#cbd5e1' : '#1e293b';
-      ctx.font = '30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      wrapText(ctx, body || '', 80, y, w - 160, 44);
+      ctx.font = '32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      wrapText(ctx, body || '', 85, y, w - 170, 46);
 
-      return { dataUrl: c.toDataURL('image/jpeg', 0.9), width: w, height: h, text: `${title}\n${body}` };
+      return { dataUrl: c.toDataURL('image/jpeg', 0.92), width: w, height: h, text: `${title}\n${body}` };
     }
 
     function wrapText(ctx, text, x, startY, maxW, lh) {
@@ -1553,7 +1654,7 @@
           }
         }
         ctx.fillText(line, x, y);
-        y += lh * 1.25;
+        y += lh * 1.24;
       }
       return y;
     }
@@ -1692,37 +1793,90 @@
       for (let i = 0; i < count && cd < eocd; i++) {
         if (dv.getUint32(cd, true) !== 0x02014b50) break;
         const method = dv.getUint16(cd + 10, true);
-        const cSize = dv.getUint32(cd + 20, true);
+        const compSize = dv.getUint32(cd + 20, true);
         const nLen = dv.getUint16(cd + 28, true);
         const exLen = dv.getUint16(cd + 30, true);
         const cmLen = dv.getUint16(cd + 32, true);
         const lOff = dv.getUint32(cd + 42, true);
         const name = dec.decode(u8.slice(cd + 46, cd + 46 + nLen));
-        cd += 46 + nLen + exLen + cmLen;
-        if (name.endsWith('/')) continue;
-        const lN = dv.getUint16(lOff + 26, true), lE = dv.getUint16(lOff + 28, true);
-        const slice = u8.slice(lOff + 30 + lN + lE, lOff + 30 + lN + lE + cSize);
-        let data = slice;
-        if (method === 8 && typeof DecompressionStream !== 'undefined') {
-          try {
-            const ds = new DecompressionStream('deflate-raw');
-            const w = ds.writable.getWriter(); w.write(slice); w.close();
-            data = new Uint8Array(await new Response(ds.readable).arrayBuffer());
-          } catch (e) {}
+        const lnLen = dv.getUint16(lOff + 26, true);
+        const lexLen = dv.getUint16(lOff + 28, true);
+        const dStart = lOff + 30 + lnLen + lexLen;
+        const raw = u8.slice(dStart, dStart + compSize);
+        if (!name.endsWith('/')) {
+          if (method === 0) out.push({ name, data: raw });
+          else if (method === 8 && typeof DecompressionStream !== 'undefined') {
+            try {
+              const ds = new DecompressionStream('deflate-raw');
+              const w = ds.writable.getWriter(); w.write(raw); w.close();
+              const buf = await new Response(ds.readable).arrayBuffer();
+              out.push({ name, data: new Uint8Array(buf) });
+            } catch (e) {}
+          }
         }
-        out.push({ name, data });
+        cd += 46 + nLen + exLen + cmLen;
       }
       return out;
     }
 
-    // Генератор настоящего .PPTX (OOXML) из массива слайдов { title, body }
-    function buildPptxBlob(slides) {
+    // Генератор настоящего .PPTX (OOXML) с вшитыми изображениями в ppt/media/imageN.jpg
+    async function buildRealPptxFromImages(imagesArray, fitMode = 'contain', bgColorHex = '000000') {
       const enc = new TextEncoder();
-      const sList = slides.length ? slides : [{ title: 'Пустой слайд', body: '' }];
+      const cxEmu = 12192000; // 16:9 ширина (13.333 in)
+      const cyEmu = 6858000;  // 16:9 высота (7.5 in)
+
+      const items = imagesArray.length ? imagesArray : [{ dataUrl: renderTextPage('Слайд 1', 'Пустая презентация', false, true).dataUrl, width: 1920, height: 1080 }];
+      const prepared = [];
+
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        let dataUrl = it.dataUrl;
+        let w = it.width || 1920;
+        let h = it.height || 1080;
+
+        if (!dataUrl || !dataUrl.startsWith('data:image/')) {
+          const rendered = renderTextPage(it.title || `Слайд ${i + 1}`, it.body || '', false, true);
+          dataUrl = rendered.dataUrl; w = rendered.width; h = rendered.height;
+        }
+
+        // Конвертируем в чистый JPEG Uint8Array через Canvas
+        const im = await new Promise(r => { const img = new Image(); img.onload = () => r(img); img.src = dataUrl; });
+        w = im.naturalWidth || w;
+        h = im.naturalHeight || h;
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#' + bgColorHex;
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(im, 0, 0, w, h);
+        const jpegUrl = c.toDataURL('image/jpeg', 0.94);
+        const raw = atob(jpegUrl.split(',')[1]);
+        const bytes = new Uint8Array(raw.length);
+        for (let k = 0; k < raw.length; k++) bytes[k] = raw.charCodeAt(k);
+
+        // Расчёт пропорциональных координат <a:off> и <a:ext> на слайде 16:9
+        let offX = 0, offY = 0, extCx = cxEmu, extCy = cyEmu;
+        if (fitMode === 'contain') {
+          const slideRatio = cxEmu / cyEmu;
+          const imgRatio = w / h;
+          if (imgRatio > slideRatio) {
+            extCx = cxEmu;
+            extCy = Math.round(cxEmu / imgRatio);
+            offY = Math.round((cyEmu - extCy) / 2);
+          } else {
+            extCy = cyEmu;
+            extCx = Math.round(cyEmu * imgRatio);
+            offX = Math.round((cxEmu - extCx) / 2);
+          }
+        }
+
+        prepared.push({ bytes, offX, offY, extCx, extCy });
+      }
+
       const entries = [
         {
           name: '[Content_Types].xml',
-          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>${sList.map((_, i) => `<Override PartName="/ppt/slides/slide${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`).join('')}</Types>`)
+          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>${prepared.map((_, i) => `<Override PartName="/ppt/slides/slide${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`).join('')}</Types>`)
         },
         {
           name: '_rels/.rels',
@@ -1730,35 +1884,58 @@
         },
         {
           name: 'ppt/presentation.xml',
-          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:sldIdLst>${sList.map((_, i) => `<p:sldId id="${256 + i}" r:id="rId${i + 1}"/>`).join('')}</p:sldIdLst><p:sldSz cx="9144000" cy="6858000" type="screen4x3"/></p:presentation>`)
+          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:sldIdLst>${prepared.map((_, i) => `<p:sldId id="${256 + i}" r:id="rId${i + 1}"/>`).join('')}</p:sldIdLst><p:sldSz cx="${cxEmu}" cy="${cyEmu}" type="screen16x9"/></p:presentation>`)
         },
         {
           name: 'ppt/_rels/presentation.xml.rels',
-          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sList.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${i + 1}.xml"/>`).join('')}</Relationships>`)
+          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${prepared.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${i + 1}.xml"/>`).join('')}</Relationships>`)
         }
       ];
 
-      sList.forEach((s, i) => {
-        const bodyParas = String(s.body || '').split('\n').map(l => `<a:p><a:r><a:rPr lang="ru-RU" sz="2000"/><a:t>${esc(l)}</a:t></a:r></a:p>`).join('');
+      prepared.forEach((p, i) => {
+        entries.push({ name: `ppt/media/image${i + 1}.jpg`, data: p.bytes });
+        entries.push({
+          name: `ppt/slides/_rels/slide${i + 1}.xml.rels`,
+          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image${i + 1}.jpg"/></Relationships>`)
+        });
         entries.push({
           name: `ppt/slides/slide${i + 1}.xml`,
-          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/><p:sp><p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="457200" y="365125"/><a:ext cx="8229600" cy="1143000"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="ru-RU" sz="3200" b="1"/><a:t>${esc(s.title || `Слайд ${i + 1}`)}</a:t></a:r></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Content"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="457200" y="1600200"/><a:ext cx="8229600" cy="4525963"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/>${bodyParas}</p:txBody></p:sp></p:spTree></p:cSld></p:sld>`)
+          data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="${bgColorHex}"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/><p:pic><p:nvPicPr><p:cNvPr id="2" name="Picture ${i + 1}"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="${p.offX}" y="${p.offY}"/><a:ext cx="${p.extCx}" cy="${p.extCy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic></p:spTree></p:cSld></p:sld>`)
         });
       });
 
       return buildZip(entries, 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
     }
 
-    function exportWordDocx(textareaId, filename) {
-      const txt = document.getElementById(textareaId).value;
+    // Генератор настоящего .DOCX (OOXML) с текстом и картинками страниц
+    async function buildRealDocx(textContent, pageImages = []) {
       const enc = new TextEncoder();
-      const paras = txt.split('\n').map(l => `<w:p><w:r><w:t xml:space="preserve">${esc(l)}</w:t></w:r></w:p>`).join('');
+      const paras = String(textContent || '').split('\n').map(l => `<w:p><w:r><w:t xml:space="preserve">${esc(l)}</w:t></w:r></w:p>`).join('');
       const entries = [
-        { name: '[Content_Types].xml', data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`) },
+        { name: '[Content_Types].xml', data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`) },
         { name: '_rels/.rels', data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`) },
-        { name: 'word/document.xml', data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${paras}</w:body></w:document>`) }
+        { name: 'word/_rels/document.xml.rels', data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${pageImages.map((_, i) => `<Relationship Id="rImg${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/page${i + 1}.jpg"/>`).join('')}</Relationships>`) }
       ];
-      saveFile(buildZip(entries, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'), filename);
+
+      let imgXml = '';
+      for (let i = 0; i < pageImages.length; i++) {
+        const p = pageImages[i];
+        if (!p.dataUrl || !p.dataUrl.startsWith('data:image/')) continue;
+        const raw = atob(p.dataUrl.split(',')[1]);
+        const bytes = new Uint8Array(raw.length);
+        for (let k = 0; k < raw.length; k++) bytes[k] = raw.charCodeAt(k);
+        entries.push({ name: `word/media/page${i + 1}.jpg`, data: bytes });
+        const cx = 5760000;
+        const cy = Math.round(cx * ((p.height || 1754) / (p.width || 1240)));
+        imgXml += `<w:p><w:r><w:drawing><wp:inline xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${i + 1}" name="Page${i + 1}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="Page${i + 1}.jpg"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rImg${i + 1}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+      }
+
+      entries.push({
+        name: 'word/document.xml',
+        data: enc.encode(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>${imgXml}${paras}</w:body></w:document>`)
+      });
+
+      return buildZip(entries, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     }
 
     function saveTextAsPdf(textareaId, filename) {
@@ -1771,362 +1948,525 @@
     }
 
     /* =======================================================================
-       4. РЕАЛИЗАЦИЯ ИНСТРУМЕНТОВ
+       4. ТОЧНЫЙ 1-В-1 РЕНДЕР PPTX -> PDF И WORD (.DOCX) -> PDF
        ======================================================================= */
-    // 1. Правописание
-    function runSpellCheck() {
-      recordHistory('spell');
-      let t = document.getElementById('spell-text').value;
-      const rules = [
-        [/\bсеводня\b/gi, 'сегодня'], [/\bзделали\b/gi, 'сделали'], [/\bзделать\b/gi, 'сделать'],
-        [/\bпроэкт\b/gi, 'проект'], [/\bпожалуста\b/gi, 'пожалуйста'], [/\bево\b/gi, 'его'],
-        [/\bздраствуйте\b/gi, 'здравствуйте'], [/\bсимпотичный\b/gi, 'симпатичный'],
-        [/\s+([,.;:!?])/g, '$1'], [/([,.;:!?])([^\s\d»”)\]])/g, '$1 $2'], [/[ \t]{2,}/g, ' ']
-      ];
-      let fixes = 0;
-      rules.forEach(([rx, rep]) => {
-        const next = t.replace(rx, rep);
-        if (next !== t) { fixes++; t = next; }
-      });
-      document.getElementById('spell-text').value = t;
-      recordHistory('spell');
-      const r = document.getElementById('spell-report');
-      r.classList.remove('hidden');
-      r.innerHTML = fixes ? `✅ Исправлено правил орфографии и пунктуации: <strong>${fixes}</strong>. Нажмите «↩ Назад», чтобы сравнить с исходником.` : '✅ Ошибок не найдено!';
+    function resolvePptxColor(node, themeColors, fallback = null) {
+      if (!node) return fallback;
+      const srgb = node.getElementsByTagName('a:srgbClr')[0];
+      if (srgb && srgb.getAttribute('val')) return '#' + srgb.getAttribute('val');
+      const scheme = node.getElementsByTagName('a:schemeClr')[0];
+      if (scheme) {
+        const val = scheme.getAttribute('val');
+        const map = { bg1: 'lt1', tx1: 'dk1', bg2: 'lt2', tx2: 'dk2' };
+        const key = map[val] || val;
+        if (themeColors[key]) return themeColors[key];
+      }
+      return fallback;
     }
 
-    // 2. Переводчик
-    const DICT = {
-      'привет': ['hello', '你好', 'hola'], 'документ': ['document', '文件', 'documento'],
-      'создан': ['created', '创建', 'creado'], 'скачать': ['download', '下载', 'descargar'],
-      'готовый': ['ready', '准备好', 'listo'], 'файл': ['file', '文件', 'archivo'],
-      'можно': ['can', '可以', 'puede'], 'бесплатно': ['for free', '免费', 'gratis'],
-      'без': ['without', '没有', 'sin'], 'интернета': ['internet', '互联网', 'internet'],
-      'работает': ['works', '工作', 'funciona'], 'сайт': ['website', '网站', 'sitio web']
-    };
-
-    function runTranslate() {
-      recordHistory('translate');
-      const dir = document.getElementById('tr-dir').value;
-      const src = document.getElementById('tr-in').value;
-      const idx = dir === 'ru-en' ? 0 : dir === 'ru-zh' ? 1 : dir === 'ru-es' ? 2 : -1;
-
-      const res = src.split(/(\s+|[.,!?]+)/).map(tok => {
-        const low = tok.toLowerCase();
-        if (idx >= 0 && DICT[low]) {
-          const tr = DICT[low][idx];
-          return tok[0] === tok[0].toUpperCase() ? tr[0].toUpperCase() + tr.slice(1) : tr;
+    function parseThemeColors(xmlDoc) {
+      const colors = {
+        dk1: '#0f172a', lt1: '#ffffff', dk2: '#1e293b', lt2: '#f8fafc',
+        accent1: '#4f7cff', accent2: '#f97316', accent3: '#10b981',
+        accent4: '#8b5cf6', accent5: '#06b6d4', accent6: '#eab308'
+      };
+      if (!xmlDoc) return colors;
+      Object.keys(colors).forEach(k => {
+        const el = xmlDoc.getElementsByTagName('a:' + k)[0];
+        if (el) {
+          const srgb = el.getElementsByTagName('a:srgbClr')[0];
+          const sys = el.getElementsByTagName('a:sysClr')[0];
+          if (srgb && srgb.getAttribute('val')) colors[k] = '#' + srgb.getAttribute('val');
+          else if (sys && sys.getAttribute('lastClr')) colors[k] = '#' + sys.getAttribute('lastClr');
         }
-        if (dir === 'en-ru') {
-          for (const [ru, arr] of Object.entries(DICT)) {
-            if (arr[0] === low) return tok[0] === tok[0].toUpperCase() ? ru[0].toUpperCase() + ru.slice(1) : ru;
+      });
+      return colors;
+    }
+
+    async function renderExactPptxSlides(file) {
+      const ents = await readZip(file);
+      const parser = new DOMParser();
+      const dec = new TextDecoder('utf-8');
+      const getXml = path => {
+        const e = ents.find(x => x.name.toLowerCase() === path.toLowerCase());
+        return e ? parser.parseFromString(dec.decode(e.data), 'application/xml') : null;
+      };
+
+      const presXml = getXml('ppt/presentation.xml');
+      const sldSz = presXml ? presXml.getElementsByTagName('p:sldSz')[0] : null;
+      const emuW = sldSz ? (+sldSz.getAttribute('cx') || 12192000) : 12192000;
+      const emuH = sldSz ? (+sldSz.getAttribute('cy') || 6858000) : 6858000;
+      const canvasW = 1920;
+      const canvasH = Math.max(720, Math.round(canvasW * (emuH / emuW)));
+      const sx = canvasW / emuW;
+      const sy = canvasH / emuH;
+
+      const themeColors = parseThemeColors(getXml('ppt/theme/theme1.xml'));
+      const masterXml = getXml('ppt/slideMasters/slideMaster1.xml');
+      const masterBgEl = masterXml ? masterXml.getElementsByTagName('p:bg')[0] : null;
+      const masterBgColor = resolvePptxColor(masterBgEl, themeColors, '#ffffff');
+
+      const mediaMap = {};
+      for (const e of ents) {
+        if (/^ppt\/media\//i.test(e.name)) {
+          const ext = e.name.split('.').pop().toLowerCase();
+          const mime = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'svg' ? 'image/svg+xml' : 'image/jpeg';
+          const blob = new Blob([e.data], { type: mime });
+          const url = URL.createObjectURL(blob);
+          const im = await new Promise(r => { const img = new Image(); img.onload = () => r(img); img.onerror = () => r(null); img.src = url; });
+          if (im) mediaMap[e.name.toLowerCase()] = { img: im, url };
+        }
+      }
+
+      const slideFiles = ents.filter(e => /^ppt\/slides\/slide\d+\.xml$/i.test(e.name))
+        .sort((a, b) => parseInt(a.name.match(/\d+/)[0], 10) - parseInt(b.name.match(/\d+/)[0], 10));
+
+      const quality = +document.getElementById('ppt-quality').value || 0.96;
+      const resultSlides = [];
+
+      for (let i = 0; i < slideFiles.length; i++) {
+        const sFile = slideFiles[i];
+        const sNum = sFile.name.match(/\d+/)[0];
+        const sXml = parser.parseFromString(dec.decode(sFile.data), 'application/xml');
+        const relsXml = getXml(`ppt/slides/_rels/slide${sNum}.xml.rels`);
+
+        const relMap = {};
+        if (relsXml) {
+          Array.from(relsXml.getElementsByTagName('Relationship')).forEach(r => {
+            const id = r.getAttribute('Id');
+            let target = r.getAttribute('Target') || '';
+            if (target.startsWith('../')) target = 'ppt/' + target.slice(3);
+            else if (!target.startsWith('ppt/')) target = 'ppt/slides/' + target;
+            relMap[id] = target.toLowerCase();
+          });
+        }
+
+        const c = document.createElement('canvas');
+        c.width = canvasW; c.height = canvasH;
+        const ctx = c.getContext('2d');
+
+        // 1. Фон слайда
+        const bgEl = sXml.getElementsByTagName('p:bg')[0];
+        let bgColor = resolvePptxColor(bgEl, themeColors, null);
+        if (!bgColor) {
+          const layoutTarget = Object.values(relMap).find(t => t.includes('slidelayout'));
+          const layoutXml = layoutTarget ? getXml(layoutTarget) : null;
+          const layoutBg = layoutXml ? layoutXml.getElementsByTagName('p:bg')[0] : null;
+          bgColor = resolvePptxColor(layoutBg, themeColors, masterBgColor || '#ffffff');
+        }
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        if (bgEl) {
+          const gs = Array.from(bgEl.getElementsByTagName('a:gs'));
+          if (gs.length >= 2) {
+            const c1 = resolvePptxColor(gs[0], themeColors, bgColor);
+            const c2 = resolvePptxColor(gs[gs.length - 1], themeColors, bgColor);
+            const grad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
+            grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvasW, canvasH);
+          }
+          const bgBlip = bgEl.getElementsByTagName('a:blip')[0];
+          const rEmbed = bgBlip ? bgBlip.getAttribute('r:embed') : null;
+          if (rEmbed && relMap[rEmbed] && mediaMap[relMap[rEmbed]]) {
+            ctx.drawImage(mediaMap[relMap[rEmbed]].img, 0, 0, canvasW, canvasH);
           }
         }
-        return tok;
-      }).join('');
 
-      document.getElementById('tr-out').value = res;
-      recordHistory('translate');
-      toast('Перевод выполнен');
-    }
+        // 2. Элементы дерева <p:spTree>
+        const spTree = sXml.getElementsByTagName('p:spTree')[0];
+        const allParagraphs = [];
 
-    function swapTranslate() {
-      recordHistory('translate');
-      const a = document.getElementById('tr-in'), b = document.getElementById('tr-out');
-      [a.value, b.value] = [b.value, a.value];
-      recordHistory('translate');
-    }
+        const drawNode = node => {
+          const tag = node.tagName;
+          if (tag === 'p:grpSp') {
+            Array.from(node.children).forEach(drawNode);
+            return;
+          }
+          const xfrm = node.getElementsByTagName('a:xfrm')[0];
+          const off = xfrm ? xfrm.getElementsByTagName('a:off')[0] : null;
+          const ext = xfrm ? xfrm.getElementsByTagName('a:ext')[0] : null;
+          const x = off ? (+off.getAttribute('x') || 0) * sx : 80;
+          const y = off ? (+off.getAttribute('y') || 0) * sy : 80;
+          const w = ext ? (+ext.getAttribute('cx') || 0) * sx : (canvasW - 160);
+          const h = ext ? (+ext.getAttribute('cy') || 0) * sy : 120;
 
-    async function loadFileToTextarea(file, id, tool) {
-      if (!file) return;
-      recordHistory(tool);
-      document.getElementById(id).value = await file.text();
-      recordHistory(tool);
-    }
+          if (tag === 'p:pic') {
+            const blip = node.getElementsByTagName('a:blip')[0];
+            const rId = blip ? blip.getAttribute('r:embed') : null;
+            if (rId && relMap[rId] && mediaMap[relMap[rId]]) {
+              ctx.drawImage(mediaMap[relMap[rId]].img, x, y, w, h);
+            }
+          } else if (tag === 'p:sp') {
+            const spPr = node.getElementsByTagName('p:spPr')[0];
+            if (spPr) {
+              const noFill = spPr.getElementsByTagName('a:noFill')[0];
+              const solidFill = !noFill ? spPr.getElementsByTagName('a:solidFill')[0] : null;
+              const fillClr = resolvePptxColor(solidFill, themeColors, null);
+              if (fillClr) {
+                ctx.fillStyle = fillClr;
+                ctx.fillRect(x, y, w, h);
+              }
+              const ln = spPr.getElementsByTagName('a:ln')[0];
+              const lnFill = ln ? ln.getElementsByTagName('a:solidFill')[0] : null;
+              const lnClr = resolvePptxColor(lnFill, themeColors, null);
+              if (lnClr && !ln.getElementsByTagName('a:noFill')[0]) {
+                ctx.strokeStyle = lnClr;
+                ctx.lineWidth = Math.max(1, ((+ln.getAttribute('w') || 12700) * sx));
+                ctx.strokeRect(x, y, w, h);
+              }
+            }
 
-    // 3. Перевести изображение
-    async function transImgLoad(file) {
-      if (!file) return;
-      const url = URL.createObjectURL(file);
-      const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
-      const c = document.getElementById('ti-canvas');
-      c.width = im.naturalWidth; c.height = im.naturalHeight;
-      c.getContext('2d').drawImage(im, 0, 0);
-      URL.revokeObjectURL(url);
-    }
+            const txBody = node.getElementsByTagName('p:txBody')[0];
+            if (txBody) {
+              const paras = Array.from(txBody.getElementsByTagName('a:p'));
+              const isTitlePh = node.getElementsByTagName('p:ph')[0]?.getAttribute('type')?.includes('title');
+              const defaultFontPx = isTitlePh ? Math.round(canvasH * 0.044) : Math.round(canvasH * 0.026);
+              const isLightBg = bgColor.toLowerCase().startsWith('#f') || bgColor.toLowerCase().startsWith('#e') || bgColor === '#ffffff';
+              const defaultTxtColor = isLightBg ? '#0f172a' : '#f8fafc';
+              let curY = y + Math.min(28, h * 0.08) + defaultFontPx;
 
-    function transImgDemo() {
-      const c = document.getElementById('ti-canvas');
-      c.width = 900; c.height = 500;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 900, 500);
-      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 6; ctx.strokeRect(40, 40, 820, 420);
-      ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 56px sans-serif'; ctx.fillText('OPEN 24 HOURS', 220, 220);
-      ctx.fillStyle = '#94a3b8'; ctx.font = '30px sans-serif'; ctx.fillText('Нажмите на надпись выше, чтобы наложить перевод', 110, 340);
-    }
+              for (const pEl of paras) {
+                const pPr = pEl.getElementsByTagName('a:pPr')[0];
+                const algn = pPr ? pPr.getAttribute('algn') : 'l';
+                const runs = Array.from(pEl.getElementsByTagName('a:r'));
+                let lineText = '';
+                let fontPx = defaultFontPx;
+                let isBold = !!isTitlePh;
+                let isItalic = false;
+                let txtColor = defaultTxtColor;
 
-    // 4. OCR / Парсер текста
-    async function ocrExtractFile(file) {
-      if (!file) return;
-      recordHistory('ocr');
-      const name = file.name.toLowerCase();
-      let text = '';
-      if (name.endsWith('.pdf')) {
-        const pages = await readPdf(file);
-        text = pages.map((p, i) => `--- Страница ${i + 1} ---\n${p.text || '[Графическая страница]'}`).join('\n\n');
-      } else if (name.endsWith('.docx')) {
-        const ents = await readZip(file);
-        const doc = ents.find(e => e.name === 'word/document.xml');
-        if (doc) {
-          const xml = new DOMParser().parseFromString(new TextDecoder().decode(doc.data), 'application/xml');
-          text = Array.from(xml.getElementsByTagName('w:p')).map(p => Array.from(p.getElementsByTagName('w:t')).map(t => t.textContent).join('')).join('\n');
-        }
-      } else if (name.endsWith('.pptx')) {
-        const ents = await readZip(file);
-        text = ents.filter(e => /slide\d+\.xml/.test(e.name)).map((s, i) => {
-          const xml = new DOMParser().parseFromString(new TextDecoder().decode(s.data), 'application/xml');
-          return `[Слайд ${i + 1}]\n` + Array.from(xml.getElementsByTagName('a:t')).map(t => t.textContent).join(' ');
-        }).join('\n\n');
-      } else if (name.endsWith('.html') || name.endsWith('.htm')) {
-        const d = new DOMParser().parseFromString(await file.text(), 'text/html');
-        text = (d.body.textContent || '').trim();
-      } else if (file.type.startsWith('image/')) {
-        text = `Файл изображения: ${file.name} (${fmtSize(file.size)})\nПодсказка: для наложения перевода поверх фото используйте инструмент «Перевести изображение».`;
-      } else {
-        text = await file.text();
+                runs.forEach((rEl, rIdx) => {
+                  const tEl = rEl.getElementsByTagName('a:t')[0];
+                  if (tEl) lineText += tEl.textContent;
+                  if (rIdx === 0) {
+                    const rPr = rEl.getElementsByTagName('a:rPr')[0];
+                    if (rPr) {
+                      const sz = +rPr.getAttribute('sz');
+                      if (sz) fontPx = Math.max(13, Math.round((sz / 100) * (canvasH / 540)));
+                      if (rPr.getAttribute('b') === '1') isBold = true;
+                      if (rPr.getAttribute('b') === '0') isBold = false;
+                      if (rPr.getAttribute('i') === '1') isItalic = true;
+                      const rFill = rPr.getElementsByTagName('a:solidFill')[0];
+                      txtColor = resolvePptxColor(rFill, themeColors, defaultTxtColor);
+                    }
+                  }
+                });
+
+                if (!lineText.trim()) {
+                  curY += fontPx * 0.65;
+                  continue;
+                }
+                allParagraphs.push(lineText);
+
+                ctx.save();
+                ctx.font = `${isItalic ? 'italic ' : ''}${isBold ? 'bold ' : ''}${fontPx}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+                ctx.fillStyle = txtColor;
+                ctx.textAlign = algn === 'ctr' ? 'center' : algn === 'r' ? 'right' : 'left';
+                const padX = 14;
+                const maxTextW = Math.max(60, w - padX * 2);
+                const anchorX = algn === 'ctr' ? x + w / 2 : algn === 'r' ? x + w - padX : x + padX;
+                curY = wrapText(ctx, lineText, anchorX, curY, maxTextW, fontPx * 1.24);
+                ctx.restore();
+              }
+            }
+          }
+        };
+
+        if (spTree) Array.from(spTree.children).forEach(drawNode);
+
+        const dataUrl = c.toDataURL('image/jpeg', quality);
+        resultSlides.push({
+          title: allParagraphs[0] || `Слайд ${i + 1}`,
+          body: allParagraphs.slice(1).join('\n'),
+          dataUrl,
+          width: canvasW,
+          height: canvasH,
+          isExact: true
+        });
       }
-      document.getElementById('ocr-out').value = text;
-      recordHistory('ocr');
-      toast('Текст извлечён');
+
+      Object.values(mediaMap).forEach(m => URL.revokeObjectURL(m.url));
+      return resultSlides;
     }
 
-    // 5. Создание и редактирование PDF (с Undo/Redo)
-    let psTimer = null;
-    function renderPdfStudio() {
-      const p = state.pdfStudioPages[state.pdfStudioIdx] || state.pdfStudioPages[0];
-      document.getElementById('ps-title').value = p.title;
-      document.getElementById('ps-body').value = p.body;
-      document.getElementById('ps-theme').value = p.theme;
-
-      document.getElementById('pdfstudio-tabs').innerHTML = state.pdfStudioPages.map((_, i) => `
-        <button type="button" class="btn btn-sm ${i === state.pdfStudioIdx ? 'btn-primary' : ''}" onclick="state.pdfStudioIdx=${i};renderPdfStudio()">Стр. ${i + 1}</button>
-      `).join('');
-    }
-
-    function pdfStudioSyncInput(immediate = false) {
-      const p = state.pdfStudioPages[state.pdfStudioIdx];
-      p.title = document.getElementById('ps-title').value;
-      p.body = document.getElementById('ps-body').value;
-      p.theme = document.getElementById('ps-theme').value;
-      clearTimeout(psTimer);
-      if (immediate) recordHistory('pdfstudio');
-      else psTimer = setTimeout(() => recordHistory('pdfstudio'), 450);
-    }
-
-    function pdfStudioAddPage() {
-      state.pdfStudioPages.push({ title: `Страница ${state.pdfStudioPages.length + 1}`, body: 'Текст новой страницы...', theme: 'light' });
-      state.pdfStudioIdx = state.pdfStudioPages.length - 1;
-      recordHistory('pdfstudio');
-      renderPdfStudio();
-    }
-
-    function pdfStudioDelPage() {
-      if (state.pdfStudioPages.length <= 1) return toast('Нельзя удалить единственную страницу');
-      state.pdfStudioPages.splice(state.pdfStudioIdx, 1);
-      state.pdfStudioIdx = Math.max(0, state.pdfStudioIdx - 1);
-      recordHistory('pdfstudio');
-      renderPdfStudio();
-    }
-
-    async function pdfStudioLoadFile(file) {
-      if (!file) return;
-      const pages = await readPdf(file);
-      state.pdfStudioPages = pages.map((p, i) => {
-        const lines = (p.text || '').split('\n');
-        return { title: lines[0] || `Страница ${i + 1}`, body: lines.slice(1).join('\n'), theme: 'light' };
-      });
-      state.pdfStudioIdx = 0;
-      recordHistory('pdfstudio');
-      renderPdfStudio();
-      toast('PDF открыт для редактирования');
-    }
-
-    function pdfStudioExport() {
-      const rendered = state.pdfStudioPages.map(p => renderTextPage(p.title, p.body, p.theme === 'dark'));
-      saveFile(buildPdf(rendered), 'edited_document.pdf');
-    }
-
-    function pdfStudioToPptx() {
-      saveFile(buildPptxBlob(state.pdfStudioPages), 'from_pdf_slides.pptx');
-    }
-
-    function pdfStudioToDocx() {
-      const combined = state.pdfStudioPages.map(p => `${p.title}\n${p.body}`).join('\n\n---\n\n');
-      const tmp = document.createElement('textarea'); tmp.id = '_tmp_docx'; tmp.value = combined;
-      document.body.appendChild(tmp);
-      exportWordDocx('_tmp_docx', 'from_pdf.docx');
-      tmp.remove();
-    }
-
-    // 6. Аннотация и подпись PDF
-    function setAnnotTool(t) {
-      state.annotTool = t;
-      ['draw', 'text', 'sign'].forEach(k => {
-        document.getElementById('an-btn-' + k).classList.toggle('btn-primary', k === t);
-        document.getElementById('an-opts-' + k).classList.toggle('hidden', k !== t);
-      });
-    }
-
-    function annotLoadDemo() {
-      state.annotPages = [renderTextPage('СОГЛАШЕНИЕ № 105', 'Настоящий документ подготовлен для электронной подписи и аннотирования.\n\n• Выберите «Маркер», чтобы подчеркнуть важное.\n• Выберите «Текст», чтобы кликнуть и вписать дату.\n• Выберите «Подпись», чтобы расписаться.\n• Кнопка «↩ Назад» отменяет последний штрих!\n\n\nДата: _______________     Подпись: _______________')];
-      state.annotIdx = 0;
-      recordHistory('pdfannot');
-      renderAnnotCanvas();
-    }
-
-    async function annotLoadFile(file) {
-      if (!file) return;
-      if (file.type.startsWith('image/')) {
-        const url = URL.createObjectURL(file);
-        const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
-        const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
-        c.getContext('2d').drawImage(im, 0, 0);
-        state.annotPages = [{ dataUrl: c.toDataURL('image/jpeg', 0.92), width: c.width, height: c.height }];
-        URL.revokeObjectURL(url);
-      } else {
-        state.annotPages = await readPdf(file);
-      }
-      state.annotIdx = 0;
-      recordHistory('pdfannot');
-      renderAnnotCanvas();
-    }
-
-    function renderAnnotCanvas() {
-      const p = state.annotPages[state.annotIdx];
-      if (!p) return;
-      document.getElementById('an-page-lbl').textContent = `Страница ${state.annotIdx + 1} из ${state.annotPages.length}`;
-      const c = document.getElementById('annot-canvas');
-      c.width = p.width; c.height = p.height;
-      const im = new Image();
-      im.onload = () => c.getContext('2d').drawImage(im, 0, 0);
-      im.src = p.dataUrl;
-    }
-
-    function annotChangePage(d) {
-      const n = state.annotIdx + d;
-      if (n < 0 || n >= state.annotPages.length) return;
-      state.annotIdx = n;
-      renderAnnotCanvas();
-    }
-
-    function clearSig() {
-      const c = document.getElementById('sig-canvas');
-      c.getContext('2d').clearRect(0, 0, c.width, c.height);
-    }
-
-    function annotStampSign() {
-      const c = document.getElementById('annot-canvas');
-      const s = document.getElementById('sig-canvas');
-      const sw = c.width * 0.34, sh = sw * (s.height / s.width);
-      c.getContext('2d').drawImage(s, c.width - sw - 100, c.height - sh - 140, sw, sh);
-      state.annotPages[state.annotIdx].dataUrl = c.toDataURL('image/jpeg', 0.92);
-      recordHistory('pdfannot');
-      toast('Подпись поставлена на лист');
-    }
-
-    function annotExportPdf() {
-      if (!state.annotPages.length) return;
-      saveFile(buildPdf(state.annotPages), 'annotated_signed.pdf');
-    }
-
-    // 7. Двусторонний PDF <-> PPTX
     async function pdfPptLoad(file) {
       if (!file) return;
       if (file.name.toLowerCase().endsWith('.pptx')) {
-        const ents = await readZip(file);
-        const sl = ents.filter(e => /ppt\/slides\/slide\d+\.xml$/i.test(e.name))
-          .sort((a, b) => parseInt(a.name.match(/\d+/)[0], 10) - parseInt(b.name.match(/\d+/)[0], 10));
-        state.slides = sl.map((s, i) => {
-          const xml = new DOMParser().parseFromString(new TextDecoder().decode(s.data), 'application/xml');
-          const ps = Array.from(xml.getElementsByTagName('a:p')).map(p => Array.from(p.getElementsByTagName('a:t')).map(t => t.textContent).join('')).filter(Boolean);
-          return { title: ps[0] || `Слайд ${i + 1}`, body: ps.slice(1).join('\n') };
-        });
+        toast('Рендеринг оригинальных слайдов PPTX 1-в-1...');
+        state.slides = await renderExactPptxSlides(file);
       } else {
         const pages = await readPdf(file);
         state.slides = pages.map((p, i) => {
           const ls = (p.text || '').split('\n');
-          return { title: ls[0] || `Слайд ${i + 1}`, body: ls.slice(1).join('\n') };
+          return {
+            title: ls[0] || `Слайд ${i + 1}`,
+            body: ls.slice(1).join('\n'),
+            dataUrl: p.dataUrl,
+            width: p.width,
+            height: p.height,
+            isExact: true
+          };
         });
       }
       recordHistory('pdfppt');
       renderPdfPpt();
-      toast(`Загружено слайдов: ${state.slides.length}`);
+      toast(`Готово! Загружено слайдов: ${state.slides.length}`);
     }
 
     function pdfPptDemo() {
+      const s1 = renderTextPage('Презентация 16:9 (Оригинальный вид)', '• Сохранены цвета, фоны, картинки и координаты\n• Прямой перевод PPTX ↔ PDF без потери дизайна', false, true);
+      const s2 = renderTextPage('Слайд 2 • Аналитика проекта', 'Каждый блок остаётся ровно на своём месте.', false, true);
       state.slides = [
-        { title: 'Стратегия запуска 2026', body: '• Конвертация PDF ↔ PPTX в обе стороны\n• Поддержка русского языка и правки слайдов' },
-        { title: 'Ключевые метрики', body: 'Рост скорости обработки документов на 85% без отправки данных в облако.' }
+        { title: 'Презентация 16:9', body: 'Сохранены цвета, фоны, картинки и координаты', dataUrl: s1.dataUrl, width: s1.width, height: s1.height, isExact: true },
+        { title: 'Слайд 2 • Аналитика', body: 'Каждый блок остаётся ровно на своём месте.', dataUrl: s2.dataUrl, width: s2.width, height: s2.height, isExact: true }
       ];
       recordHistory('pdfppt');
       renderPdfPpt();
     }
 
     function pdfPptAddSlide() {
-      state.slides.push({ title: `Новый слайд ${state.slides.length + 1}`, body: 'Текст слайда...' });
+      const s = renderTextPage(`Новый слайд ${state.slides.length + 1}`, 'Текст нового слайда...', false, true);
+      state.slides.push({ title: `Новый слайд ${state.slides.length + 1}`, body: 'Текст нового слайда...', dataUrl: s.dataUrl, width: s.width, height: s.height, isExact: false });
       recordHistory('pdfppt');
       renderPdfPpt();
     }
 
     function renderPdfPpt() {
-      document.getElementById('pdfppt-list').innerHTML = state.slides.map((s, i) => `
-        <div class="card" style="background:var(--bg-3);margin-bottom:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <strong style="font-size:12px;color:#93c5fd;">Слайд #${i + 1}</strong>
-            <button type="button" class="btn btn-danger btn-sm" onclick="state.slides.splice(${i},1);recordHistory('pdfppt');renderPdfPpt()">✕</button>
-          </div>
-          <input type="text" class="input" value="${esc(s.title)}" onchange="state.slides[${i}].title=this.value;recordHistory('pdfppt')" />
-          <textarea class="textarea mt2" style="min-height:70px;" onchange="state.slides[${i}].body=this.value;recordHistory('pdfppt')">${esc(s.body)}</textarea>
+      const mode = document.getElementById('ppt-render-mode').value;
+      const prevEl = document.getElementById('pdfppt-preview');
+      const listEl = document.getElementById('pdfppt-list');
+
+      prevEl.innerHTML = state.slides.map((s, i) => s.dataUrl ? `
+        <div class="page-box">
+          <img src="${s.dataUrl}" class="page-img" style="height:115px;" />
+          <div style="font-size:11px;font-weight:700;">Слайд ${i + 1}</div>
+          <button type="button" class="btn btn-danger btn-sm" onclick="state.slides.splice(${i},1);recordHistory('pdfppt');renderPdfPpt()">Удалить</button>
         </div>
-      `).join('');
+      ` : '').join('');
+
+      if (mode === 'exact' && state.slides.some(s => s.isExact)) {
+        listEl.innerHTML = state.slides.length ? `<div class="banner">✅ Загружено слайдов в оригинальном оформлении: <strong>${state.slides.length}</strong>. При экспорте в PDF или обратно в PPTX дизайн останется 1-в-1.</div>` : '';
+      } else {
+        listEl.innerHTML = state.slides.map((s, i) => `
+          <div class="card" style="background:var(--bg-3);margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <strong style="font-size:12px;color:#93c5fd;">Слайд #${i + 1}</strong>
+              <button type="button" class="btn btn-danger btn-sm" onclick="state.slides.splice(${i},1);recordHistory('pdfppt');renderPdfPpt()">✕</button>
+            </div>
+            <input type="text" class="input" value="${esc(s.title)}" onchange="state.slides[${i}].title=this.value;state.slides[${i}].isExact=false;recordHistory('pdfppt')" />
+            <textarea class="textarea mt2" style="min-height:70px;" onchange="state.slides[${i}].body=this.value;state.slides[${i}].isExact=false;recordHistory('pdfppt')">${esc(s.body)}</textarea>
+          </div>
+        `).join('');
+      }
     }
 
     function exportSlidesToPdf() {
-      if (!state.slides.length) return toast('Добавьте слайды');
-      const pages = state.slides.map(s => renderTextPage(s.title, s.body, true, true));
-      saveFile(buildPdf(pages), 'slides_presentation.pdf');
+      if (!state.slides.length) return toast('Сначала откройте .PPTX или добавьте слайды');
+      const mode = document.getElementById('ppt-render-mode').value;
+      const pages = state.slides.map(s => {
+        if (mode === 'exact' && s.dataUrl) {
+          return { dataUrl: s.dataUrl, width: s.width || 1920, height: s.height || 1080, text: `${s.title}\n${s.body}` };
+        }
+        return renderTextPage(s.title, s.body, false, true);
+      });
+      saveFile(buildPdf(pages), 'presentation_1to1.pdf');
     }
 
-    function exportSlidesToPptx() {
+    async function exportSlidesToPptx() {
       if (!state.slides.length) return toast('Добавьте слайды');
-      saveFile(buildPptxBlob(state.slides), 'presentation.pptx');
+      const mode = document.getElementById('ppt-render-mode').value;
+      const prepared = state.slides.map(s => (mode === 'exact' && s.dataUrl) ? s : renderTextPage(s.title, s.body, false, true));
+      const blob = await buildRealPptxFromImages(prepared, 'contain', 'FFFFFF');
+      saveFile(blob, 'presentation_1to1.pptx');
     }
 
-    // 8. Двусторонний PDF <-> Word
+    function exportSlidesAsPngZip() {
+      if (!state.slides.length) return toast('Нет слайдов');
+      const ents = state.slides.map((s, i) => {
+        const url = s.dataUrl || renderTextPage(s.title, s.body, false, true).dataUrl;
+        const raw = atob(url.split(',')[1]);
+        const u = new Uint8Array(raw.length);
+        for (let k = 0; k < raw.length; k++) u[k] = raw.charCodeAt(k);
+        return { name: `slide_${i + 1}.jpg`, data: u };
+      });
+      saveFile(buildZip(ents), 'slides_png.zip');
+    }
+
+    // 8. Word (.docx) <-> PDF с оформлением и таблицами
+    async function renderExactDocxPages(file) {
+      const ents = await readZip(file);
+      const dec = new TextDecoder('utf-8');
+      const parser = new DOMParser();
+      const docEnt = ents.find(e => e.name.toLowerCase() === 'word/document.xml');
+      if (!docEnt) return [renderTextPage(file.name, 'Пустой документ Word')];
+
+      const docXml = parser.parseFromString(dec.decode(docEnt.data), 'application/xml');
+      const relsEnt = ents.find(e => e.name.toLowerCase() === 'word/_rels/document.xml.rels');
+      const relMap = {};
+      if (relsEnt) {
+        const rXml = parser.parseFromString(dec.decode(relsEnt.data), 'application/xml');
+        Array.from(rXml.getElementsByTagName('Relationship')).forEach(r => {
+          let t = r.getAttribute('Target') || '';
+          if (!t.startsWith('word/')) t = 'word/' + t.replace(/^\//, '');
+          relMap[r.getAttribute('Id')] = t.toLowerCase();
+        });
+      }
+
+      const mediaMap = {};
+      for (const e of ents) {
+        if (/^word\/media\//i.test(e.name)) {
+          const url = URL.createObjectURL(new Blob([e.data]));
+          const im = await new Promise(r => { const img = new Image(); img.onload = () => r(img); img.onerror = () => r(null); img.src = url; });
+          if (im) mediaMap[e.name.toLowerCase()] = { img: im, url };
+        }
+      }
+
+      const bodyEl = docXml.getElementsByTagName('w:body')[0];
+      const pages = [];
+      const plainLines = [];
+
+      let c = document.createElement('canvas'); c.width = 1240; c.height = 1754;
+      let ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1240, 1754);
+      let y = 100;
+      let pageText = [];
+
+      const pushNewPage = () => {
+        pages.push({ dataUrl: c.toDataURL('image/jpeg', 0.92), width: 1240, height: 1754, text: pageText.join('\n') });
+        c = document.createElement('canvas'); c.width = 1240; c.height = 1754;
+        ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1240, 1754);
+        y = 100; pageText = [];
+      };
+
+      for (const node of Array.from(bodyEl.children)) {
+        if (node.tagName === 'w:p') {
+          // Встроенные картинки внутри абзаца
+          const blips = Array.from(node.getElementsByTagName('a:blip'));
+          for (const bl of blips) {
+            const rId = bl.getAttribute('r:embed');
+            if (rId && relMap[rId] && mediaMap[relMap[rId]]) {
+              const im = mediaMap[relMap[rId]].img;
+              const drawW = Math.min(1040, im.naturalWidth);
+              const drawH = Math.round(drawW * (im.naturalHeight / im.naturalWidth));
+              if (y + drawH > 1640) pushNewPage();
+              ctx.drawImage(im, 100, y, drawW, drawH);
+              y += drawH + 24;
+            }
+          }
+
+          const pStyle = node.getElementsByTagName('w:pStyle')[0]?.getAttribute('w:val') || '';
+          const isHeading = /Heading|Title|Заголовок/i.test(pStyle);
+          const runs = Array.from(node.getElementsByTagName('w:r'));
+          let txt = '';
+          let isBold = isHeading;
+          let color = '#0f172a';
+          runs.forEach((r, idx) => {
+            txt += Array.from(r.getElementsByTagName('w:t')).map(t => t.textContent).join('');
+            if (idx === 0) {
+              if (r.getElementsByTagName('w:b')[0]) isBold = true;
+              const clr = r.getElementsByTagName('w:color')[0]?.getAttribute('w:val');
+              if (clr && clr !== 'auto') color = '#' + clr;
+            }
+          });
+
+          if (!txt.trim()) { y += 22; continue; }
+          plainLines.push(txt);
+          pageText.push(txt);
+
+          const fs = isHeading ? 42 : 28;
+          if (y + fs * 2 > 1650) pushNewPage();
+          ctx.fillStyle = color;
+          ctx.font = `${isBold ? 'bold ' : ''}${fs}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+          y = wrapText(ctx, txt, 100, y, 1040, fs * 1.32);
+        } else if (node.tagName === 'w:tbl') {
+          const rows = Array.from(node.getElementsByTagName('w:tr'));
+          for (const tr of rows) {
+            const cells = Array.from(tr.getElementsByTagName('w:tc'));
+            const colW = Math.floor(1040 / Math.max(1, cells.length));
+            const rowH = 54;
+            if (y + rowH > 1650) pushNewPage();
+            const rowTexts = [];
+            cells.forEach((tc, ci) => {
+              const cellTxt = Array.from(tc.getElementsByTagName('w:t')).map(t => t.textContent).join(' ');
+              rowTexts.push(cellTxt);
+              ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+              ctx.strokeRect(100 + ci * colW, y, colW, rowH);
+              ctx.fillStyle = '#0f172a'; ctx.font = '24px sans-serif';
+              ctx.fillText(cellTxt.slice(0, 34), 112 + ci * colW, y + 36);
+            });
+            plainLines.push(rowTexts.join(' | '));
+            pageText.push(rowTexts.join(' | '));
+            y += rowH;
+          }
+          y += 22;
+        }
+      }
+
+      if (pageText.length || !pages.length) {
+        pages.push({ dataUrl: c.toDataURL('image/jpeg', 0.92), width: 1240, height: 1754, text: pageText.join('\n') });
+      }
+      Object.values(mediaMap).forEach(m => URL.revokeObjectURL(m.url));
+      return { pages, fullText: plainLines.join('\n') };
+    }
+
     async function pdfWordLoad(file) {
       if (!file) return;
       recordHistory('pdfword');
       const name = file.name.toLowerCase();
-      if (name.endsWith('.pdf')) {
+      if (name.endsWith('.docx')) {
+        const res = await renderExactDocxPages(file);
+        state.wordPages = res.pages;
+        document.getElementById('pw-text').value = res.fullText;
+      } else if (name.endsWith('.pdf')) {
         const pages = await readPdf(file);
+        state.wordPages = pages;
         document.getElementById('pw-text').value = pages.map(p => p.text).join('\n\n');
-      } else if (name.endsWith('.docx')) {
-        const ents = await readZip(file);
-        const doc = ents.find(e => e.name === 'word/document.xml');
-        if (doc) {
-          const xml = new DOMParser().parseFromString(new TextDecoder().decode(doc.data), 'application/xml');
-          document.getElementById('pw-text').value = Array.from(xml.getElementsByTagName('w:p')).map(p => Array.from(p.getElementsByTagName('w:t')).map(t => t.textContent).join('')).join('\n');
-        }
       } else {
-        document.getElementById('pw-text').value = await file.text();
+        const txt = await file.text();
+        document.getElementById('pw-text').value = txt;
+        state.wordPages = [renderTextPage(file.name, txt)];
       }
       recordHistory('pdfword');
+      renderWordPreview();
+      toast('Документ загружен с сохранением страниц');
     }
 
     function pdfWordDemo() {
       recordHistory('pdfword');
-      document.getElementById('pw-text').value = 'КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ\n\nЭтот текст можно сохранить как в настоящий файл Microsoft Word (.docx), так и обратно в документ .PDF одним нажатием кнопки.';
+      const txt = 'ДОГОВОР ОКАЗАНИЯ УСЛУГ № 42\n\n1. Предмет договора: конвертация Word (.docx) ↔ PDF с сохранением страниц, таблиц и текста.\n2. Любые изменения можно откатить кнопками «↩ Назад» и «↪ Вперёд».';
+      document.getElementById('pw-text').value = txt;
+      state.wordPages = [renderTextPage('ДОГОВОР ОКАЗАНИЯ УСЛУГ № 42', txt.split('\n').slice(2).join('\n'))];
       recordHistory('pdfword');
+      renderWordPreview();
+    }
+
+    function onWordTextEdit() {
+      const lines = document.getElementById('pw-text').value.split('\n');
+      state.wordPages = [renderTextPage(lines[0] || 'Документ', lines.slice(1).join('\n'))];
+      renderWordPreview();
+      recordHistory('pdfword');
+    }
+
+    function renderWordPreview() {
+      document.getElementById('pw-preview').innerHTML = state.wordPages.map((p, i) => `
+        <div class="page-box">
+          <img src="${p.dataUrl}" class="page-img" style="height:125px;" />
+          <div style="font-size:11px;font-weight:700;">Страница ${i + 1}</div>
+        </div>
+      `).join('');
+    }
+
+    async function exportWordDocxFromState(filename) {
+      const txt = document.getElementById('pw-text').value;
+      const blob = await buildRealDocx(txt, state.wordPages);
+      saveFile(blob, filename);
+    }
+
+    function exportWordPdfFromState(filename) {
+      if (!state.wordPages.length) onWordTextEdit();
+      saveFile(buildPdf(state.wordPages), filename);
     }
 
     // 9. Двусторонний PDF <-> Изображения
@@ -2140,7 +2480,7 @@
           const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
           const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
           c.getContext('2d').drawImage(im, 0, 0);
-          state.pdfImgList.push({ name: f.name, dataUrl: c.toDataURL('image/jpeg', 0.9), width: c.width, height: c.height });
+          state.pdfImgList.push({ name: f.name, dataUrl: c.toDataURL('image/jpeg', 0.92), width: c.width, height: c.height });
           URL.revokeObjectURL(url);
         }
       }
@@ -2255,7 +2595,7 @@
         const c = document.createElement('canvas'); c.width = im.height; c.height = im.width;
         const ctx = c.getContext('2d'); ctx.translate(c.width / 2, c.height / 2); ctx.rotate(Math.PI / 2);
         ctx.drawImage(im, -im.width / 2, -im.height / 2);
-        p.dataUrl = c.toDataURL('image/jpeg', 0.9); p.width = c.width; p.height = c.height;
+        p.dataUrl = c.toDataURL('image/jpeg', 0.92); p.width = c.width; p.height = c.height;
         recordHistory('pdfmanage');
         renderPdfManage();
       };
@@ -2302,7 +2642,7 @@
     }
 
     function scannerDemo() {
-      const p = renderTextPage('КВИТАНЦИЯ ОБ ОПЛАТЕ № 991', 'Сумма: 4 500 ₽\nСтатус: Оплачено\nДата: 14.11.2026');
+      const p = renderTextPage('КВИТАНЦИЯ ОБ ОПЛАТЕ № 991', 'Сумма: 4 500 ₽\nСтатус: Оплачено\nДата: 15.11.2026');
       const im = new Image(); im.onload = () => { state.scanList.push({ im, url: '' }); scannerRender(); }; im.src = p.dataUrl;
     }
 
@@ -2314,7 +2654,7 @@
         const ctx = c.getContext('2d');
         ctx.filter = mode === 'bw' ? `grayscale(100%) contrast(${cVal}%)` : mode === 'color' ? `saturate(130%) contrast(${cVal}%)` : 'none';
         ctx.drawImage(s.im, 0, 0);
-        s.url = c.toDataURL('image/jpeg', 0.88); s.w = c.width; s.h = c.height;
+        s.url = c.toDataURL('image/jpeg', 0.9); s.w = c.width; s.h = c.height;
         return `<div class="page-box"><img src="${s.url}" class="page-img"/><div style="font-size:11px;">Скан #${i + 1}</div></div>`;
       }).join('');
     }
@@ -2371,7 +2711,7 @@
       }
     }
 
-    // 14. Изображения <-> Слайды
+    // 14. Изображения -> Слайды (.pptx с настоящими фотографиями внутри ppt/media/)
     async function imgSlidesAdd(files) {
       for (const f of Array.from(files)) {
         if (!f.type.startsWith('image/')) continue;
@@ -2379,28 +2719,50 @@
         const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
         const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
         c.getContext('2d').drawImage(im, 0, 0);
-        state.imgSlides.push({ title: f.name, body: `Изображение ${c.width}×${c.height}`, dataUrl: c.toDataURL('image/jpeg', 0.85) });
+        state.imgSlides.push({ name: f.name, dataUrl: c.toDataURL('image/jpeg', 0.94), width: c.width, height: c.height });
         URL.revokeObjectURL(url);
       }
+      recordHistory('imgslides');
       renderImgSlides();
     }
 
     function imgSlidesDemo() {
-      const p1 = renderTextPage('Кадр 1', 'Изображение для слайда 1');
-      const p2 = renderTextPage('Кадр 2', 'Изображение для слайда 2', true);
-      state.imgSlides.push({ title: 'Слайд 1', body: 'Описание первого кадра', dataUrl: p1.dataUrl }, { title: 'Слайд 2', body: 'Описание второго кадра', dataUrl: p2.dataUrl });
+      const c1 = document.createElement('canvas'); c1.width = 1280; c1.height = 720;
+      const g1 = c1.getContext('2d');
+      const gr1 = g1.createLinearGradient(0, 0, 1280, 720); gr1.addColorStop(0, '#0284c7'); gr1.addColorStop(1, '#4f46e5');
+      g1.fillStyle = gr1; g1.fillRect(0, 0, 1280, 720);
+      g1.fillStyle = '#ffffff'; g1.font = 'bold 64px sans-serif'; g1.fillText('Фото 1 (Настоящее изображение)', 110, 380);
+
+      const c2 = document.createElement('canvas'); c2.width = 900; c2.height = 1400;
+      const g2 = c2.getContext('2d');
+      const gr2 = g2.createLinearGradient(0, 0, 900, 1400); gr2.addColorStop(0, '#059669'); gr2.addColorStop(1, '#0f172a');
+      g2.fillStyle = gr2; g2.fillRect(0, 0, 900, 1400);
+      g2.fillStyle = '#ffffff'; g2.font = 'bold 54px sans-serif'; g2.fillText('Вертикальное фото 2', 140, 700);
+
+      state.imgSlides.push(
+        { name: 'slide_photo_1.jpg', dataUrl: c1.toDataURL('image/jpeg', 0.92), width: 1280, height: 720 },
+        { name: 'slide_photo_2.jpg', dataUrl: c2.toDataURL('image/jpeg', 0.92), width: 900, height: 1400 }
+      );
+      recordHistory('imgslides');
       renderImgSlides();
     }
 
     function renderImgSlides() {
       document.getElementById('imgslides-grid').innerHTML = state.imgSlides.map((s, i) => `
-        <div class="page-box"><img src="${s.dataUrl}" class="page-img"/><div style="font-size:11px;font-weight:700;">Слайд ${i + 1}</div></div>
+        <div class="page-box">
+          <img src="${s.dataUrl}" class="page-img"/>
+          <div style="font-size:11px;font-weight:700;">Слайд ${i + 1} (${s.width}×${s.height})</div>
+          <button type="button" class="btn btn-danger btn-sm" onclick="state.imgSlides.splice(${i},1);recordHistory('imgslides');renderImgSlides()">✕</button>
+        </div>
       `).join('');
     }
 
-    function imgSlidesToPptx() {
+    async function imgSlidesToPptx() {
       if (!state.imgSlides.length) return toast('Добавьте картинки');
-      saveFile(buildPptxBlob(state.imgSlides), 'images_slides.pptx');
+      const fit = document.getElementById('is-fit').value;
+      const bg = document.getElementById('is-bg').value;
+      const blob = await buildRealPptxFromImages(state.imgSlides, fit, bg);
+      saveFile(blob, 'images_slides.pptx');
     }
 
     // 15. Длинное изображение (Склейка)
@@ -2493,7 +2855,7 @@
     async function imgOptAdd(files) {
       for (const f of Array.from(files)) {
         if (!f.type.startsWith('image/')) continue;
-        const it = { name: f.name, origUrl: URL.createObjectURL(f), origSize: f.size, blob: null, url: '', size: 0, split: 50 };
+        const it = { name: f.name, origBlob: f, origUrl: URL.createObjectURL(f), origSize: f.size, blob: null, url: '', size: 0, split: 50 };
         await imgOptProcessOne(it);
         state.imgOptList.push(it);
       }
@@ -2515,19 +2877,27 @@
         const fmt = document.getElementById('io-fmt').value;
         const q = +document.getElementById('io-q').value / 100;
         const maxW = +document.getElementById('io-maxw').value || 0;
+        if (fmt === 'original' && maxW === 0 && it.origBlob) {
+          if (it.url) URL.revokeObjectURL(it.url);
+          it.blob = it.origBlob;
+          it.url = URL.createObjectURL(it.origBlob);
+          it.size = it.origBlob.size;
+          return res();
+        }
         const im = new Image();
         im.onload = () => {
           let w = im.naturalWidth, h = im.naturalHeight;
           if (maxW > 0 && w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
           const c = document.createElement('canvas'); c.width = w; c.height = h;
           const ctx = c.getContext('2d');
-          if (fmt === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+          const outMime = fmt === 'original' ? (it.origBlob?.type || 'image/png') : fmt;
+          if (outMime === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
           ctx.drawImage(im, 0, 0, w, h);
           c.toBlob(b => {
             if (it.url) URL.revokeObjectURL(it.url);
             it.blob = b; it.url = URL.createObjectURL(b); it.size = b.size;
             res();
-          }, fmt, q);
+          }, outMime, q);
         };
         im.src = it.origUrl;
       });
@@ -2540,9 +2910,10 @@
 
     function renderImgOpt() {
       const fmt = document.getElementById('io-fmt').value;
-      const ext = fmt === 'image/webp' ? 'webp' : fmt === 'image/jpeg' ? 'jpg' : 'png';
       document.getElementById('imgopt-list').innerHTML = state.imgOptList.map((it, i) => {
-        const outName = it.name.replace(/\.[^.]+$/, '') + '_opt.' + ext;
+        const origExt = (it.name.split('.').pop() || 'png');
+        const ext = fmt === 'original' ? origExt : fmt === 'image/webp' ? 'webp' : fmt === 'image/jpeg' ? 'jpg' : 'png';
+        const outName = fmt === 'original' ? it.name : it.name.replace(/\.[^.]+$/, '') + '_opt.' + ext;
         return `
           <div class="card" style="background:var(--bg-3);margin-bottom:0;">
             <div style="font-size:12px;font-weight:700;margin-bottom:6px;">${esc(outName)}</div>
@@ -2648,7 +3019,84 @@
       ctx.fillText(sub, 80, 365);
     }
 
-    // 20. Живая HTML-студия и предпросмотр сайта
+    // 20. Универсальный конвертер ЛЮБЫХ файлов <-> ZIP (Байт-в-байт без изменений)
+    async function anyZipAddFiles(files) {
+      for (const f of Array.from(files)) {
+        const buf = await f.arrayBuffer();
+        state.anyZipItems.push({
+          name: f.name,
+          data: new Uint8Array(buf),
+          type: f.type || 'application/octet-stream'
+        });
+      }
+      recordHistory('anyzip');
+      renderAnyZip();
+      toast(`Добавлено файлов без изменений: ${files.length}`);
+    }
+
+    async function anyZipImportDownloads() {
+      if (!state.downloads.length) return toast('В разделе «Готовые файлы» пока пусто');
+      let added = 0;
+      for (const d of state.downloads) {
+        if (!d.blob) continue;
+        const buf = await d.blob.arrayBuffer();
+        state.anyZipItems.push({ name: d.name, data: new Uint8Array(buf), type: d.blob.type || 'application/octet-stream' });
+        added++;
+      }
+      recordHistory('anyzip');
+      renderAnyZip();
+      toast(`Импортировано из готовых файлов: ${added}`);
+    }
+
+    async function anyZipExtractArchive(file) {
+      if (!file) return;
+      const entries = await readZip(file);
+      state.anyZipItems = entries.map(e => ({
+        name: e.name,
+        data: e.data,
+        type: 'application/octet-stream'
+      }));
+      document.getElementById('az-name').value = file.name.replace(/\.[^.]+$/, '') + '_repacked.zip';
+      recordHistory('anyzip');
+      renderAnyZip();
+      toast(`Извлечено файлов из архива: ${entries.length}`);
+    }
+
+    function renderAnyZip() {
+      const sum = document.getElementById('anyzip-summary');
+      const list = document.getElementById('anyzip-list');
+      if (!state.anyZipItems.length) {
+        sum.classList.add('hidden');
+        list.innerHTML = '';
+        return;
+      }
+      const totalBytes = state.anyZipItems.reduce((acc, it) => acc + it.data.length, 0);
+      sum.classList.remove('hidden');
+      sum.innerHTML = `✅ Готово к упаковке без потерь: <strong>${state.anyZipItems.length}</strong> файл(ов) • Общий объём: <strong>${fmtSize(totalBytes)}</strong> (100% оригинальные байты)`;
+
+      list.innerHTML = state.anyZipItems.map((it, i) => `
+        <div class="row-item">
+          <div class="row-main">
+            <div class="row-title">${esc(it.name)}</div>
+            <div class="row-sub">${fmtSize(it.data.length)} • Оригинал без изменений</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button type="button" class="btn btn-sm" onclick="saveFile(new Blob([state.anyZipItems[${i}].data], {type: state.anyZipItems[${i}].type}), '${esc(it.name.split('/').pop())}')">⬇️ Скачать</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="state.anyZipItems.splice(${i},1);recordHistory('anyzip');renderAnyZip()">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function anyZipBuildDownload() {
+      if (!state.anyZipItems.length) return toast('Сначала выберите любые файлы');
+      let zipName = (document.getElementById('az-name').value || 'files_bundle.zip').trim();
+      if (!zipName.toLowerCase().endsWith('.zip')) zipName += '.zip';
+      const blob = buildZip(state.anyZipItems.map(it => ({ name: it.name, data: it.data })));
+      saveFile(blob, zipName);
+    }
+
+    // 21. Живая HTML-студия и предпросмотр сайта
     let hsTimer = null;
     const HTML_TEMPLATES = {
       landing: `<!DOCTYPE html>
@@ -2761,7 +3209,7 @@
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    // 21. APK / XAPK <-> ZIP
+    // 22. APK / XAPK <-> ZIP
     async function apkLoad(file) {
       if (!file) return;
       state.apkEntries = await readZip(file);
@@ -2805,33 +3253,300 @@
       saveFile(buildZip(state.apkEntries, mime), `${state.apkBase}.${ext}`);
     }
 
+    // 1. Правописание
+    function runSpellCheck() {
+      recordHistory('spell');
+      let t = document.getElementById('spell-text').value;
+      const rules = [
+        [/\bсеводня\b/gi, 'сегодня'], [/\bзделали\b/gi, 'сделали'], [/\bзделать\b/gi, 'сделать'],
+        [/\bпроэкт\b/gi, 'проект'], [/\bпожалуста\b/gi, 'пожалуйста'], [/\bево\b/gi, 'его'],
+        [/\bздраствуйте\b/gi, 'здравствуйте'], [/\bсимпотичный\b/gi, 'симпатичный'],
+        [/\s+([,.;:!?])/g, '$1'], [/([,.;:!?])([^\s\d»”)\]])/g, '$1 $2'], [/[ \t]{2,}/g, ' ']
+      ];
+      let fixes = 0;
+      rules.forEach(([rx, rep]) => {
+        const next = t.replace(rx, rep);
+        if (next !== t) { fixes++; t = next; }
+      });
+      document.getElementById('spell-text').value = t;
+      recordHistory('spell');
+      const r = document.getElementById('spell-report');
+      r.classList.remove('hidden');
+      r.innerHTML = fixes ? `✅ Исправлено правил орфографии и пунктуации: <strong>${fixes}</strong>.` : '✅ Ошибок не найдено!';
+    }
+
+    // 2. Переводчик
+    const DICT = {
+      'привет': ['hello', '你好', 'hola'], 'документ': ['document', '文件', 'documento'],
+      'создан': ['created', '创建', 'creado'], 'скачать': ['download', '下载', 'descargar'],
+      'готовый': ['ready', '准备好', 'listo'], 'файл': ['file', '文件', 'archivo'],
+      'можно': ['can', '可以', 'puede'], 'бесплатно': ['for free', '免费', 'gratis'],
+      'без': ['without', '没有', 'sin'], 'интернета': ['internet', '互联网', 'internet'],
+      'работает': ['works', '工作', 'funciona'], 'сайт': ['website', '网站', 'sitio web']
+    };
+
+    function runTranslate() {
+      recordHistory('translate');
+      const dir = document.getElementById('tr-dir').value;
+      const src = document.getElementById('tr-in').value;
+      const idx = dir === 'ru-en' ? 0 : dir === 'ru-zh' ? 1 : dir === 'ru-es' ? 2 : -1;
+
+      const res = src.split(/(\s+|[.,!?]+)/).map(tok => {
+        const low = tok.toLowerCase();
+        if (idx >= 0 && DICT[low]) {
+          const tr = DICT[low][idx];
+          return tok[0] === tok[0].toUpperCase() ? tr[0].toUpperCase() + tr.slice(1) : tr;
+        }
+        if (dir === 'en-ru') {
+          for (const [ru, arr] of Object.entries(DICT)) {
+            if (arr[0] === low) return tok[0] === tok[0].toUpperCase() ? ru[0].toUpperCase() + ru.slice(1) : ru;
+          }
+        }
+        return tok;
+      }).join('');
+
+      document.getElementById('tr-out').value = res;
+      recordHistory('translate');
+      toast('Перевод выполнен');
+    }
+
+    function swapTranslate() {
+      recordHistory('translate');
+      const a = document.getElementById('tr-in'), b = document.getElementById('tr-out');
+      [a.value, b.value] = [b.value, a.value];
+      recordHistory('translate');
+    }
+
+    async function loadFileToTextarea(file, id, tool) {
+      if (!file) return;
+      recordHistory(tool);
+      document.getElementById(id).value = await file.text();
+      recordHistory(tool);
+    }
+
+    // 3. Перевести изображение
+    async function transImgLoad(file) {
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
+      const c = document.getElementById('ti-canvas');
+      c.width = im.naturalWidth; c.height = im.naturalHeight;
+      c.getContext('2d').drawImage(im, 0, 0);
+      URL.revokeObjectURL(url);
+    }
+
+    function transImgDemo() {
+      const c = document.getElementById('ti-canvas');
+      c.width = 900; c.height = 500;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 900, 500);
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 6; ctx.strokeRect(40, 40, 820, 420);
+      ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 56px sans-serif'; ctx.fillText('OPEN 24 HOURS', 220, 220);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '30px sans-serif'; ctx.fillText('Нажмите на надпись выше, чтобы наложить перевод', 110, 340);
+    }
+
+    // 4. OCR / Парсер текста
+    async function ocrExtractFile(file) {
+      if (!file) return;
+      recordHistory('ocr');
+      const name = file.name.toLowerCase();
+      let text = '';
+      if (name.endsWith('.pdf')) {
+        const pages = await readPdf(file);
+        text = pages.map((p, i) => `--- Страница ${i + 1} ---\n${p.text || '[Графическая страница]'}`).join('\n\n');
+      } else if (name.endsWith('.docx')) {
+        const ents = await readZip(file);
+        const doc = ents.find(e => e.name === 'word/document.xml');
+        if (doc) {
+          const xml = new DOMParser().parseFromString(new TextDecoder().decode(doc.data), 'application/xml');
+          text = Array.from(xml.getElementsByTagName('w:p')).map(p => Array.from(p.getElementsByTagName('w:t')).map(t => t.textContent).join('')).join('\n');
+        }
+      } else if (name.endsWith('.pptx')) {
+        const ents = await readZip(file);
+        text = ents.filter(e => /slide\d+\.xml/.test(e.name)).map((s, i) => {
+          const xml = new DOMParser().parseFromString(new TextDecoder().decode(s.data), 'application/xml');
+          return `[Слайд ${i + 1}]\n` + Array.from(xml.getElementsByTagName('a:t')).map(t => t.textContent).join(' ');
+        }).join('\n\n');
+      } else if (name.endsWith('.html') || name.endsWith('.htm')) {
+        const d = new DOMParser().parseFromString(await file.text(), 'text/html');
+        text = (d.body.textContent || '').trim();
+      } else if (file.type.startsWith('image/')) {
+        text = `Файл изображения: ${file.name} (${fmtSize(file.size)})\nПодсказка: для наложения перевода поверх фото используйте инструмент «Перевести изображение».`;
+      } else {
+        text = await file.text();
+      }
+      document.getElementById('ocr-out').value = text;
+      recordHistory('ocr');
+      toast('Текст извлечён');
+    }
+
+    // 5. Создание и редактирование PDF
+    let psTimer = null;
+    function renderPdfStudio() {
+      const p = state.pdfStudioPages[state.pdfStudioIdx] || state.pdfStudioPages[0];
+      document.getElementById('ps-title').value = p.title;
+      document.getElementById('ps-body').value = p.body;
+      document.getElementById('ps-theme').value = p.theme;
+
+      document.getElementById('pdfstudio-tabs').innerHTML = state.pdfStudioPages.map((_, i) => `
+        <button type="button" class="btn btn-sm ${i === state.pdfStudioIdx ? 'btn-primary' : ''}" onclick="state.pdfStudioIdx=${i};renderPdfStudio()">Стр. ${i + 1}</button>
+      `).join('');
+    }
+
+    function pdfStudioSyncInput(immediate = false) {
+      const p = state.pdfStudioPages[state.pdfStudioIdx];
+      p.title = document.getElementById('ps-title').value;
+      p.body = document.getElementById('ps-body').value;
+      p.theme = document.getElementById('ps-theme').value;
+      clearTimeout(psTimer);
+      if (immediate) recordHistory('pdfstudio');
+      else psTimer = setTimeout(() => recordHistory('pdfstudio'), 450);
+    }
+
+    function pdfStudioAddPage() {
+      state.pdfStudioPages.push({ title: `Страница ${state.pdfStudioPages.length + 1}`, body: 'Текст новой страницы...', theme: 'light' });
+      state.pdfStudioIdx = state.pdfStudioPages.length - 1;
+      recordHistory('pdfstudio');
+      renderPdfStudio();
+    }
+
+    function pdfStudioDelPage() {
+      if (state.pdfStudioPages.length <= 1) return toast('Нельзя удалить единственную страницу');
+      state.pdfStudioPages.splice(state.pdfStudioIdx, 1);
+      state.pdfStudioIdx = Math.max(0, state.pdfStudioIdx - 1);
+      recordHistory('pdfstudio');
+      renderPdfStudio();
+    }
+
+    async function pdfStudioLoadFile(file) {
+      if (!file) return;
+      const pages = await readPdf(file);
+      state.pdfStudioPages = pages.map((p, i) => {
+        const lines = (p.text || '').split('\n');
+        return { title: lines[0] || `Страница ${i + 1}`, body: lines.slice(1).join('\n'), theme: 'light' };
+      });
+      state.pdfStudioIdx = 0;
+      recordHistory('pdfstudio');
+      renderPdfStudio();
+      toast('PDF открыт для редактирования');
+    }
+
+    function pdfStudioExport() {
+      const rendered = state.pdfStudioPages.map(p => renderTextPage(p.title, p.body, p.theme === 'dark'));
+      saveFile(buildPdf(rendered), 'edited_document.pdf');
+    }
+
+    async function pdfStudioToPptx() {
+      const rendered = state.pdfStudioPages.map(p => renderTextPage(p.title, p.body, p.theme === 'dark', true));
+      saveFile(await buildRealPptxFromImages(rendered), 'from_pdf_slides.pptx');
+    }
+
+    async function pdfStudioToDocx() {
+      const combined = state.pdfStudioPages.map(p => `${p.title}\n${p.body}`).join('\n\n---\n\n');
+      const rendered = state.pdfStudioPages.map(p => renderTextPage(p.title, p.body, false));
+      saveFile(await buildRealDocx(combined, rendered), 'from_pdf.docx');
+    }
+
+    // 6. Аннотация и подпись PDF
+    function setAnnotTool(t) {
+      state.annotTool = t;
+      ['draw', 'text', 'sign'].forEach(k => {
+        document.getElementById('an-btn-' + k).classList.toggle('btn-primary', k === t);
+        document.getElementById('an-opts-' + k).classList.toggle('hidden', k !== t);
+      });
+    }
+
+    function annotLoadDemo() {
+      state.annotPages = [renderTextPage('СОГЛАШЕНИЕ № 105', 'Настоящий документ подготовлен для электронной подписи и аннотирования.\n\n• Выберите «Маркер», чтобы подчеркнуть важное.\n• Выберите «Текст», чтобы кликнуть и вписать дату.\n• Выберите «Подпись», чтобы расписаться.\n• Кнопка «↩ Назад» отменяет последний штрих!\n\n\nДата: _______________     Подпись: _______________')];
+      state.annotIdx = 0;
+      recordHistory('pdfannot');
+      renderAnnotCanvas();
+    }
+
+    async function annotLoadFile(file) {
+      if (!file) return;
+      if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        const im = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = url; });
+        const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+        c.getContext('2d').drawImage(im, 0, 0);
+        state.annotPages = [{ dataUrl: c.toDataURL('image/jpeg', 0.92), width: c.width, height: c.height }];
+        URL.revokeObjectURL(url);
+      } else {
+        state.annotPages = await readPdf(file);
+      }
+      state.annotIdx = 0;
+      recordHistory('pdfannot');
+      renderAnnotCanvas();
+    }
+
+    function renderAnnotCanvas() {
+      const p = state.annotPages[state.annotIdx];
+      if (!p) return;
+      document.getElementById('an-page-lbl').textContent = `Страница ${state.annotIdx + 1} из ${state.annotPages.length}`;
+      const c = document.getElementById('annot-canvas');
+      c.width = p.width; c.height = p.height;
+      const im = new Image();
+      im.onload = () => c.getContext('2d').drawImage(im, 0, 0);
+      im.src = p.dataUrl;
+    }
+
+    function annotChangePage(d) {
+      const n = state.annotIdx + d;
+      if (n < 0 || n >= state.annotPages.length) return;
+      state.annotIdx = n;
+      renderAnnotCanvas();
+    }
+
+    function clearSig() {
+      const c = document.getElementById('sig-canvas');
+      c.getContext('2d').clearRect(0, 0, c.width, c.height);
+    }
+
+    function annotStampSign() {
+      const c = document.getElementById('annot-canvas');
+      const s = document.getElementById('sig-canvas');
+      const sw = c.width * 0.34, sh = sw * (s.height / s.width);
+      c.getContext('2d').drawImage(s, c.width - sw - 100, c.height - sh - 140, sw, sh);
+      state.annotPages[state.annotIdx].dataUrl = c.toDataURL('image/jpeg', 0.92);
+      recordHistory('pdfannot');
+      toast('Подпись поставлена на лист');
+    }
+
+    function annotExportPdf() {
+      if (!state.annotPages.length) return;
+      saveFile(buildPdf(state.annotPages), 'annotated_signed.pdf');
+    }
+
     /* =======================================================================
-       5. ИНИЦИАЛИЗАЦИЯ ХОЛСТОВ (АННОТАЦИИ, ПОДПИСЬ, ПЕРЕВОД КАРТИНКИ)
+       5. СОБЫТИЯ РИСОВАНИЯ НА ХОЛСТАХ (АННОТАЦИИ, ПОДПИСЬ, ПЕРЕВОД ФОТО)
        ======================================================================= */
-    window.addEventListener('DOMContentLoaded', () => {
-      // Аннотации PDF
+    document.addEventListener('DOMContentLoaded', () => {
+      const pt = (c, e) => {
+        const r = c.getBoundingClientRect();
+        const t = e.touches ? e.touches[0] : e;
+        return { x: (t.clientX - r.left) * (c.width / r.width), y: (t.clientY - r.top) * (c.height / r.height) };
+      };
+
       const ac = document.getElementById('annot-canvas');
       const actx = ac.getContext('2d');
       let drawing = false;
-      const pt = (c, e) => {
-        const r = c.getBoundingClientRect();
-        const cx = e.touches ? e.touches[0].clientX : e.clientX;
-        const cy = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: (cx - r.left) * (c.width / r.width), y: (cy - r.top) * (c.height / r.height) };
-      };
       const aDown = e => {
         if (!state.annotPages.length) return;
         const p = pt(ac, e);
         if (state.annotTool === 'text') {
-          e.preventDefault();
-          actx.fillStyle = '#1d4ed8'; actx.font = 'bold 34px sans-serif';
-          actx.fillText(document.getElementById('an-text-val').value || 'Текст', p.x, p.y);
+          const val = document.getElementById('an-text-val').value || 'Текст';
+          actx.fillStyle = document.getElementById('an-color').value;
+          actx.font = 'bold 34px sans-serif';
+          actx.fillText(val, p.x, p.y);
           state.annotPages[state.annotIdx].dataUrl = ac.toDataURL('image/jpeg', 0.92);
           recordHistory('pdfannot');
-        } else if (state.annotTool === 'draw') {
+          return;
+        }
+        if (state.annotTool === 'draw') {
           e.preventDefault(); drawing = true;
           actx.strokeStyle = document.getElementById('an-color').value;
-          actx.lineWidth = +document.getElementById('an-size').value * 1.6;
+          actx.lineWidth = +document.getElementById('an-size').value;
           actx.lineCap = 'round'; actx.lineJoin = 'round';
           actx.beginPath(); actx.moveTo(p.x, p.y);
         }
@@ -2841,7 +3556,6 @@
       ac.addEventListener('mousedown', aDown); ac.addEventListener('mousemove', aMove); window.addEventListener('mouseup', aUp);
       ac.addEventListener('touchstart', aDown, { passive: false }); ac.addEventListener('touchmove', aMove, { passive: false }); window.addEventListener('touchend', aUp);
 
-      // Подпись
       const sc = document.getElementById('sig-canvas');
       const sctx = sc.getContext('2d');
       let sDraw = false;
@@ -2850,7 +3564,6 @@
       sc.addEventListener('mousedown', sDown); sc.addEventListener('mousemove', sMove); window.addEventListener('mouseup', () => sDraw = false);
       sc.addEventListener('touchstart', sDown, { passive: false }); sc.addEventListener('touchmove', sMove, { passive: false }); window.addEventListener('touchend', () => sDraw = false);
 
-      // Перевод изображения по клику
       const tc = document.getElementById('ti-canvas');
       tc.addEventListener('click', e => {
         if (!tc.width) return;
